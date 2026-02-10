@@ -1871,8 +1871,6 @@ function harmonic(g::NamedArray; norm=false)
 end
 end
 
-using .MGraph, NamedArrays, DelimitedFiles, DataFrames
-
 const HELP_TEXT="""
     \$ julia MGraph.jl
     Usage: MGraph.jl --help|--create-data|--snha
