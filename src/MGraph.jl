@@ -1869,8 +1869,9 @@ function harmonic(g::NamedArray; norm=false)
     res = NamedArray(res, (nms,), ("harmonic",))
     return res
 end
-end
 
+
+# ------------ MAIN----------------
 const HELP_TEXT="""
     \$ julia MGraph.jl
     Usage: MGraph.jl --help|--create-data|--snha
@@ -2140,4 +2141,4 @@ end
 if abspath(PROGRAM_FILE) == @__FILE__
     main(ARGS)
 end
-
+end
