@@ -1,4 +1,32 @@
 name = "MGraph"
 uuid = "77493f7a-e4d4-4472-b76a-f872429cf179"
-authors = ["Roberto Zarazuanav"]
 version = "0.1.0"
+authors = ["Roberto Zarazuanav"]
+
+[deps]
+Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+CRC32c = "8bf52ea8-c179-5cab-976a-9e18b702a9bc"
+CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+NamedArrays = "86f7a689-2022-50b4-a561-43c23ac3c673"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
+
+[compat]
+Base64 = "1.11.0"
+CRC32c = "1.11.0"
+CodecZlib = "0.7.8"
+DataFrames = "1.8.1"
+DelimitedFiles = "1.9.1"
+Distributions = "0.25.123"
+Downloads = "1.6.0"
+LinearAlgebra = "1.12.0"
+NamedArrays = "0.10.5"
+Random = "1.11.0"
+Statistics = "1.11.1"
+StatsBase = "0.34.10"
