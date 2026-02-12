@@ -98,10 +98,14 @@ julia>  show(stdout, "text/plain", g_asg["theta"])
 julia> g_dot = graph2dot(g_asg["theta"],mode="undirected",type="werner")
 julia> kroki(g_dot,type="graphviz",name=i)
 ```
+
+### Sample image
 <div align="center">
   <img src="https://raw.githubusercontent.com/nono-zarazua/snha4jl/main/img/og-sample.png">
 </div>
 
+
+### Image from artifial data
 <div align="center">
   <img src="https://raw.githubusercontent.com/nono-zarazua/snha4jl/main/img/artificial-sample.png">
 </div>
