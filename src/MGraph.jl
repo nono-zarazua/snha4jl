@@ -1905,7 +1905,7 @@ const HELP_TEXT="""
 """
 
 function main(argv)
-    println(argv)  
+    #println(argv)  
     if isempty(argv) || "--help" in argv
         println(HELP_TEXT)
         return
