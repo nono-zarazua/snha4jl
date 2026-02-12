@@ -104,11 +104,11 @@ julia> g_dot = graph2dot(g_asg["theta"],mode="undirected",type="werner")
 julia> kroki(g_dot,type="graphviz",name=i)
 ```
 <div align="center">
-  <img src="https://github.com/nono-zarazua/snha4jl/tree/main/og-sample.png">
+  <img src="https://github.com/nono-zarazua/snha4jl/tree/main/img/og-sample.png">
 </div>
 
 <div align="center">
-  <img src="https://github.com/nono-zarazua/snha4jl/tree/main/artificial-sample.png">
+  <img src="https://github.com/nono-zarazua/snha4jl/tree/main/img/artificial-sample.png">
 </div>
 
 # References
