@@ -20,11 +20,6 @@ There are also implementations of the SNHA in
 [Python](https://github.com/thake93/snha4py)
 available.
 
-# Documentation
-
-- [HTML](https://htmlpreview.github.io/?https://github.com/thake93/snha4py/blob/main/docs/__init__.html)
-- [Markdown](https://github.com/thake93/snha4py/blob/main/docs/Snha.md)
-
 # Install
 
 Activate your julia interpreter:
@@ -104,11 +99,11 @@ julia> g_dot = graph2dot(g_asg["theta"],mode="undirected",type="werner")
 julia> kroki(g_dot,type="graphviz",name=i)
 ```
 <div align="center">
-  <img src="https://github.com/nono-zarazua/snha4jl/tree/main/img/og-sample.png">
+  <img src="https://raw.githubusercontent.com/nono-zarazua/snha4jl/main/img/og-sample.png">
 </div>
 
 <div align="center">
-  <img src="https://github.com/nono-zarazua/snha4jl/tree/main/img/artificial-sample.png">
+  <img src="https://raw.githubusercontent.com/nono-zarazua/snha4jl/main/img/artificial-sample.png">
 </div>
 
 # References
