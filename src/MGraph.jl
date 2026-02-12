@@ -1916,11 +1916,11 @@ function main(argv)
         error("The argument used is not a valid argument from $validcmd")
     elseif argv[1] == "--gnew"
         validtypes = ["werner","barabasi"]
-        if length(argv) < 2 || !(argv[2] in validtypes)
+        if length(argv) < 2 || !(lowercase(argv[2]) in validtypes)
             error("The second argument for --gnew must be a valid type of graph in $validtypes")
         end
 
-        type = argv[2]
+        type = lowercase(argv[2])
         
         args = Dict{Symbol,Any}()
         valid_args = ["--nodes", "--edges", "-v", "--mode", "-o"]
@@ -1955,6 +1955,7 @@ function main(argv)
                 i += 1
                 continue
             elseif argv[i] == "--mode"
+                val = lowercase(val)
                 if !(val in ["directed", "undirected"])
                     error("The value for --mode should be 'directed' or 'undirected'. You provided: $val.")
                 end
@@ -2085,7 +2086,15 @@ function main(argv)
                 val = argv[i+1]
             end
 
-            if argv[i] == "--alpha"
+            if argv[i] == "--method"
+                val = lowercase(val)
+                valid_methods = ["pearson", "spearman"]
+                if !(val in valid_methods)
+                    error("Only methods in $valid_methods are supported.")
+                else
+                    args[:method] = val
+                end
+            elseif argv[i] == "--alpha"
                 valfl = tryparse(Float64, val)
                 if isnothing(valfl) || valfl > 1.0 || valfl < 0.0
                     error("The value for --alpha must be an float between 0.00 and 1.00. You provided: $val.")
