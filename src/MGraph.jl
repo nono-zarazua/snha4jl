@@ -67,13 +67,13 @@ export asg, centrality, shortest_paths, simple_paths, components, closeness, u2d
 <a name="gnew"> </a>
 **gnew(x; mode="directed")**
 
-> Create an new graph object based on either an adjacency matrix.
+> Create adjacency matrices as NamedArray objects for further use.
 
 > This function ...
 
 > Arguments:
 
-> - _x_ - either a adjacency matrix or an adjacency list, if not given a type must be given
+> - _x_ - an adjacency matrix
   - _type_ - a graph type, one of 'angie', 'band', 'barabasi', 'circle', 'cluster', 'hubs', 'random', 'regular' or 'werner', default: random
   - _mode_ - either 'undirected' or 'directed', default: 'directed'
   - _nodes_ - number of nodes for a given type, default: 10
@@ -87,22 +87,38 @@ export asg, centrality, shortest_paths, simple_paths, components, closeness, u2d
 
 > Examples:
 
-```{jl label=gnew}
-using NamedArrays
-L=string.('A':'Z')[1:7]
-M=NamedArray(zeros(Int64,7,7),(L,L),("row", "col"))
-M[["A","B"],"C"]=[1,1]
-M["C","D"]=1
-M["D",["E","F"]]=[1,1]
-M["E","F"]=1
-G=gnew(M)
-R=gnew(type="random",nodes=8,edges=9)
+```{jl label=gnew, results="hide"}
+# Build using adjacency matrix
+M = zeros(Int64,6,6)
+pairs = [(1,3), (3,1), (2,3), (3,2), (3,4), (4,3), (4,5), (5,4), (4,6), (6,4), (5,6), (6,5)]
+M[CartesianIndex.(pairs)] .= 1
+M_graph = gnew(M)
+m_dot = graph2dot(M_graph,mode="undirected",type="werner")
+kroki(m_dot,type="graphviz",name="m_dot-for-docu")
+
+# Build using type
+W = gnew(type="werner", mode = "undirected")
+w_dot = graph2dot(W,mode="undirected",type="werner")
+kroki(w_dot,type="graphviz",name="w_dot-for-docu")
+
 A = gnew(type="angie",nodes=8,edges=9)
+a_dot = graph2dot(A,mode="directed",type="angie")
+kroki(a_dot,type="graphviz",name="a_dot-for-docu")
+
 B = gnew(type="band",nodes=8)
+b_dot = graph2dot(B,mode="directed",type="band")
+kroki(b_dot,type="graphviz",name="b_dot-for-docu")
+
 C = gnew(type="circle",nodes=8)
-C
+c_dot = graph2dot(C,mode="directed",type="circle")
+kroki(c_dot,type="graphviz",name="c_dot-for-docu")
 ```
 
+| Werner (Matrix) | Werner (Type) | Angie |
+| :---: | :---: | :---: |
+| <img src="img/m_dot-for-docu.png" width="250"> | <img src="img/w_dot-for-docu.png" width="250"> | <img src="img/a_dot-for-docu.png" width="250"> |
+| **Band** | **Circle** | |
+| <img src="img/b_dot-for-docu.png" width="250"> | <img src="img/c_dot-for-docu.png" width="250"> | |
 
 """
 

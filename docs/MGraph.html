@@ -1,0 +1,580 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="title" content="MGraph.jl">
+<meta name="author" content="Roberto Zarazua">
+    
+<title>MGraph.jl</title>
+    
+    
+
+
+<style>
+@import url("data:text/css;base64,QGltcG9ydCB1cmwoJ2h0dHBzOi8vZm9udHMuYnVubnkubmV0L2Nzcz9mYW1pbHk9QW5kaWthJmRpc3BsYXk9c3dhcCcpOyAKQGltcG9ydCB1cmwoJ2h0dHBzOi8vZm9udHMuYnVubnkubmV0L2Nzcz9mYW1pbHk9VWJ1bnR1K01vbm8mZGlzcGxheT1zd2FwJyk7IC8qICcgKi8KCmJvZHkgewogIHBhZGRpbmc6IDMwcHg7CiAgbWF4LXdpZHRoOiAxMDAwcHg7CiAgZm9udC1mYW1pbHk6IEFuZGlrYSwgc2Fucy1zZXJpZjsKICBtYXJnaW46IDAgYXV0bzsKfQoKaDEudGl0bGUsIHAuYXV0aG9yLCBwLmRhdGUsIGgyLmF1dGhvciwgaDIuZGF0ZSB7CiAgICB0ZXh0LWFsaWduOiBjZW50ZXI7Cn0KYSB7IHRleHQtZGVjb3JhdGlvbjogbm9uZSA7IH0KcHJlIHsKICAgIHBhZGRpbmc6IDEwcHggOwogICAgYm9yZGVyLXRvcDogMnB4IHNvbGlkICNDQ0NDQ0M7CiAgICBib3JkZXItYm90dG9tOiAycHggc29saWQgI0NDQ0NDQzsgCiAgICBmb250LWZhbWlseTogIlVidW50dSBNb25vIiwgbW9ub3NwYWNlOwp9CnByZTpoYXMoY29kZSkgewogICAgYmFja2dyb3VuZDogI2VmZWZlZjsKfQpwcmU6aGFzKGNvZGUudGNsY29kZSkgewogICAgYmFja2dyb3VuZDogY29ybnNpbGs7ICAgCn0KCnByZTpoYXMoY29kZS50Y2xvdXQpIHsgICAgCiAgICBiYWNrZ3JvdW5kOiAjQ0NFRUZGOwp9CnByZTpoYXMoY29kZS50Y2xlcnIpIHsgICAgCiAgICBiYWNrZ3JvdW5kOiAjRkZDQ0NDOwp9CnByZTpoYXMoY29kZS5lcnJvcikgeyAgICAKICAgIGJhY2tncm91bmQ6ICNGRkNDQ0M7Cn0KCnRhYmxlIHsgICAgCiAgYm9yZGVyLWNvbGxhcHNlOiBjb2xsYXBzZTsKICBib3JkZXItYm90dG9tOiAycHggc29saWQ7CiAgYm9yZGVyLXNwYWNpbmc6IDVweDsKICBtaW4td2lkdGg6IDUwMHB4Owp9CnRhYmxlIHRoZWFkIHRyIHRoIHsgCiAgYmFja2dyb3VuZC1jb2xvcjogI2ZkZTlkOTsKICB0ZXh0LWFsaWduOiBsZWZ0OyAKICBwYWRkaW5nOiA1cHg7CiAgYm9yZGVyLXRvcDogMnB4IHNvbGlkOwogIGJvcmRlci1ib3R0b206IDJweCBzb2xpZDsKfQp0YWJsZSB0ciB0ZCB7IAogIGJhY2tncm91bmQtY29sb3I6ICNmNmY2ZjY7CiAgdGV4dC1hbGlnbjogbGVmdDsgCiAgcGFkZGluZzogNXB4Owp9CgovKiBodHRwczovL2NvZGVwZW4uaW8vSGFycml4L3Blbi9wWlpaeGcgKi8KCmtiZCB7CiAgbWFyZ2luOiAwOwogIHBhZGRpbmc6IDA7CiAgYm9yZGVyOiAwOwogIG91dGxpbmU6IDA7CiAgY29sb3I6IGdyZXkyMDsKICBmb250LXNpemU6IDEwMCU7CiAgZm9udC1mYW1pbHk6IG1vbm9zcGFjZSwgc2Fucy1zZXJpZjsKICB2ZXJ0aWNhbC1hbGlnbjogYmFzZWxpbmU7CiAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQ7CiAgYm9yZGVyLWNvbG9yOiAjZTZlNmU2ICNiZWJlYmUgI2JlYmViZSAjZTZlNmU2OwogIGJvcmRlci1zdHlsZTogc29saWQ7CiAgYm9yZGVyLXdpZHRoOiAxcHggM3B4IDRweDsKICBwYWRkaW5nOiAwIDVweDsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjZDJkMmQyOwogIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMjEwLCAyMTAsIDIxMCwgMC45KTsKICAtd2Via2l0LWJvcmRlci1yYWRpdXM6IDRweDsKICAtbW96LWJvcmRlci1yYWRpdXM6IDRweDsKICBib3JkZXItcmFkaXVzOiA0cHg7Cn0KCmtiZC5tZW51IHsKICAtbW96LWJvcmRlci1yYWRpdXM6IDNweDsKICAtbW96LWJveC1zaGFkb3c6IDAgMXB4IDAgcmdiYSgwLCAwLCAwLCAwLjIpLCAwIDAgMCAycHggI2ZmZiBpbnNldDsKICAtd2Via2l0LWJvcmRlci1yYWRpdXM6IDNweDsKICAtd2Via2l0LWJveC1zaGFkb3c6IDAgMXB4IDAgcmdiYSgwLCAwLCAwLCAwLjIpLCAwIDAgMCAycHggI2ZmZiBpbnNldDsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjZjdmN2Y3OwogIGJvcmRlcjogMXB4IHNvbGlkICNjY2M7CiAgYm9yZGVyLXJhZGl1czogM3B4OwogIGJveC1zaGFkb3c6IDAgMXB4IDAgcmdiYSgwLCAwLCAwLCAwLjIpLCAwIDAgMCAycHggI2ZmZiBpbnNldDsKICBjb2xvcjogIzMzMzsKICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7CiAgZm9udC1mYW1pbHk6IG1vbm9zcGFjZSwgc2Fucy1zZXJpZjsKICBmb250LXNpemU6IDEwMCU7CiAgbGluZS1oZWlnaHQ6IDEuNDsKICBtYXJnaW46IDAgMC4xZW07CiAgcGFkZGluZzogMC4xZW0gMC42ZW07CiAgdGV4dC1zaGFkb3c6IDAgMXB4IDAgI2ZmZjsKfQoKdSB7CiAgdGV4dC1kZWNvcmF0aW9uOiBub25lOwogIGZvbnQtd2VpZ2h0OiBib2xkOwogIGJvcmRlci1ib3R0b206MXB4IHNvbGlkIGJsYWNrOwp9CnNwYW4uZ3JleTcwIHsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjYWFhOwogIHBhZGRpbmc6IDRweDsKfQovKiBBbGVydHM6ICovCgouc2lkZS13YXJuaW5nLCAuc2lkZS1jYXV0aW9uLCAuc2lkZS1pbmZvLCAuc2lkZS1xdWVzdGlvbiwgLnNpZGUtZXJyb3IsIC5zaWRlLW5vdGUsIC5zaWRlLXRpcCwgLnNpZGUtaW1wb3J0YW50LCAuc2lkZS1oaW50ICB7CiAgY29sb3I6IHZhcigtLXVzZWQtY29sb3IpOwogIG1hcmdpbi1ib3R0b206IDMycHg7CiAgbWFyZ2luLXRvcDogMTZweDsKICBwYWRkaW5nOiAxNnB4OwogIHBhZGRpbmctbGVmdDogNDhweDsKICBib3JkZXItcmFkaXVzOiA1cHggMCAwIDVweDsKICBwb3NpdGlvbjogcmVsYXRpdmU7ICAKfQouc2lkZS1lcnJvciwgLnNpZGUtY2F1dGlvbiB7CiAgYm9yZGVyLWxlZnQ6IHNvbGlkIDdweCAjYWEzMzIyOwogIGJvcmRlci10b3A6IHNvbGlkIDFweCAjZmZmMGYwOyAKICBib3JkZXItcmlnaHQ6IHNvbGlkIDFweCAjZmZmMGYwOyAKICBib3JkZXItYm90dG9tOiBzb2xpZCAxcHggI2ZmZjBmMDsgCiAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZjBmMDsKICAKfQoKLnNpZGUtaW1wb3J0YW50LCAuc2lkZS1oaW50IHsKICBib3JkZXItbGVmdDogc29saWQgN3B4ICNhYTMzYWE7CiAgYm9yZGVyLXRvcDogc29saWQgMXB4ICNmZmYwZmY7IAogIGJvcmRlci1yaWdodDogc29saWQgMXB4ICNmZmYwZmY7IAogIGJvcmRlci1ib3R0b206IHNvbGlkIDFweCAjZmZmMGZmOyAKICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmZmMGZmOwp9Cgouc2lkZS1ub3RlLCAuc2lkZS10aXAgewogIGJvcmRlci1sZWZ0OiBzb2xpZCA3cHggIzIyMzM5OTsKICBib3JkZXItdG9wOiBzb2xpZCAxcHggI2YwZjdmZjsgCiAgYm9yZGVyLXJpZ2h0OiBzb2xpZCAxcHggI2YwZjdmZjsgCiAgYm9yZGVyLWJvdHRvbTogc29saWQgMXB4ICNmMGY3ZmY7IAogIGJhY2tncm91bmQtY29sb3I6ICNmMGY3ZmY7CiAgCn0KCi5zaWRlLWluZm8gewogIGJvcmRlci1sZWZ0OiBzb2xpZCA3cHggIzMzOTkyMjsKICBib3JkZXItdG9wOiBzb2xpZCAxcHggI2Y3ZmZmMDsgCiAgYm9yZGVyLXJpZ2h0OiBzb2xpZCAxcHggI2Y3ZmZmMDsgCiAgYm9yZGVyLWJvdHRvbTogc29saWQgMXB4ICNmN2ZmZjA7IAogIGJhY2tncm91bmQtY29sb3I6ICNmN2ZmZjA7CiAgCn0KLnNpZGUtcXVlc3Rpb24gewogIGJvcmRlci1sZWZ0OiBzb2xpZCA3cHggIzk5OTkyMjsKICBib3JkZXItdG9wOiBzb2xpZCAxcHggI2ZmZmZmMDsgCiAgYm9yZGVyLXJpZ2h0OiBzb2xpZCAxcHggI2ZmZmZmMDsgCiAgYm9yZGVyLWJvdHRvbTogc29saWQgMXB4ICNmZmZmZjA7IAogIGJhY2tncm91bmQtY29sb3I6ICNmZmZmZjA7Cn0KLnNpZGUtd2FybmluZyB7CiAgYm9yZGVyLWxlZnQ6IHNvbGlkIDdweCAjZmY5OTMzOwogIGJvcmRlci10b3A6IHNvbGlkIDFweCAjZmZmN2YwOyAKICBib3JkZXItcmlnaHQ6IHNvbGlkIDFweCAjZmZmN2YwOyAKICBib3JkZXItYm90dG9tOiBzb2xpZCAxcHggI2ZmZjdmMDsgCiAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZjdmMDsKfQoKLnNpZGUtaW5mbzo6YmVmb3JlLCAuc2lkZS13YXJuaW5nOjpiZWZvcmUsIC5zaWRlLWNhdXRpb246OmJlZm9yZSwgLnNpZGUtcXVlc3Rpb246OmJlZm9yZSwgLnNpZGUtZXJyb3I6OmJlZm9yZSwgLnNpZGUtbm90ZTo6YmVmb3JlLCAuc2lkZS10aXA6OmJlZm9yZSwgLnNpZGUtaW1wb3J0YW50OjpiZWZvcmUsIC5zaWRlLWhpbnQ6OmJlZm9yZSAgewogIGFsaWduLWl0ZW1zOiBjZW50ZXI7CiAgYm9yZGVyLXJhZGl1czogNTAlOwogIGRpc3BsYXk6IGZsZXg7CiAgZm9udC1mYW1pbHk6ICJVYnVudHUgTW9ubyIsIG1vbm9zcGFjZTsKICBmb250LXNpemU6IDE2cHg7CiAgZm9udC13ZWlnaHQ6IDcwMDsKICBoZWlnaHQ6IDI0cHg7CiAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7CiAgbGVmdDogMTJweDsKICBsaW5lLWhlaWdodDogMTsKICBwb3NpdGlvbjogYWJzb2x1dGU7CiAgdG9wOiAxNXB4OwogIHdpZHRoOiAyNHB4Owp9Cgouc2lkZS1ub3RlOjpiZWZvcmUsIC5zaWRlLXRpcDo6YmVmb3JlIHsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjMjIzMzk5OwogIGNvbG9yOiAjZmZmOwogIGNvbnRlbnQ6ICJOIjsKICAKfQoKLnNpZGUtaGludDo6YmVmb3JlIHsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjOTkyMjk5OwogIGNvbG9yOiAjZmZmOwogIGNvbnRlbnQ6ICIhIjsKICAKfQoKLnNpZGUtaW1wb3J0YW50OjpiZWZvcmUgewogIGJhY2tncm91bmQtY29sb3I6ICM5OTMzOTk7CiAgY29sb3I6ICNmZmY7CiAgY29udGVudDogIiEiOwp9Cgouc2lkZS10aXA6OmJlZm9yZSB7CiAgYmFja2dyb3VuZC1jb2xvcjogIzIyMzM5OTsgCiAgY29udGVudDogIlwyNjFCIjsKICBmb250LXNpemU6IDExMCU7CiAgCn0KCi5zaWRlLWluZm86OmJlZm9yZSB7CiAgYmFja2dyb3VuZC1jb2xvcjogIzMzOTkyMjsKICBjb2xvcjogI2ZmZjsKICBjb250ZW50OiAiaSI7CiAgCn0KLnNpZGUtZXJyb3I6OmJlZm9yZSB7CiAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZjBmMDsKICBjb2xvcjogI2ZmZjsKICBjb250ZW50OiAiXDI2RDQiOwogIGZvbnQtc2l6ZTogMTIwJTsKfQouc2lkZS1jYXV0aW9uOjpiZWZvcmUgewogIGJhY2tncm91bmQtY29sb3I6ICNhYTMzMjI7CiAgY29sb3I6ICNmZmY7CiAgY29udGVudDogIiEiOwp9Cgouc2lkZS1xdWVzdGlvbjo6YmVmb3JlIHsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjOTk5OTIyOwogIGNvbG9yOiAjZmZmOwogIGNvbnRlbnQ6ICI/IjsKICAKfQoKLnNpZGUtd2FybmluZzo6YmVmb3JlIHsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjZGQ2NjIyOwogIGNvbG9yOiAjZmZmOwogIGNvbnRlbnQ6ICIhIjsKICAKfQovKiBmaXggZm9yIEFzY2lpRG9jIHRhYmxlcyB3aXRoIHBhcmFncmFwaHMgKi8KcC50YWJsZWJsb2NrIHsgcGFkZGluZzogMHB4OyBtYXJnaW46IDBweDt9Cg==");
+</style>
+
+
+<style>
+</style>
+    
+</head>
+<body>
+    
+
+
+
+    <div class="document-header">
+<h1 class="title">MGraph.jl</h1>
+<h2 class="author">Roberto Zarazua</h2>
+<h2 class="date">2025-10-28</h2>
+    </div>
+
+<p>MGraph — tiny helpers for graphs.</p>
+
+<p><span class='tab-caption'>
+<strong>Table of Contents</strong>
+</span></p>
+
+<p>Exports:</p>
+
+<ul>
+<li><a href="#gnew">gnew</a> - build a graph from an adjacency matrix/list or canned generators</li>
+<li><a href="#asg">asg</a> - create an association chain graph using the St. Nicolas House Algorithm</li>
+<li><a href="#autonames">autonames</a> - create names for nodes and other data structures</li>
+<li><a href="#centrality">centrality</a> - centrality measures such as betweenness, closeness, degree, eigenvector und katz centrality</li>
+<li><a href="#components">components</a> - extract graph components</li>
+<li><a href="#d2u">d2u</a> - create an undirected graph out of a directed graph</li>
+<li><a href="#deg">deg</a> - number of undirected or incoming and outgoing edges</li>
+<li><a href="#edgeDirShuffle">edgeDirShuffle</a> - shuffle the direction of edges in an directed graph without multiedges.</li>
+<li><a href="#graph2dot">graph2dot</a> - convert a graph to Graphviz DOT</li>
+<li><a href="#graph2data">graph2data</a> - create correlation data for the given graph.</li>
+<li><a href="#kroki">kroki</a> - visualize diagram code for ditaa, graphviz, etc.</li>
+<li><a href="#simple_paths">simple_paths</a> - calculate all simple paths between two nodes</li>
+<li><a href="#nodeColors">nodeColors</a> - node colors for directed graphs</li>
+<li><a href="#shortest_paths">shortest_paths</a> - calculate the shortest path for a given graph</li>
+<li><a href="#u2d">u2d</a> - create an directed graph out of an undirected graph
+
+</li></ul>
+
+<p>Helper Functions</p>
+
+<ul>
+<li><a href="#pmatch">pmatch</a> - partial match helper similar to R's pmatch.
+</li></ul>
+
+<pre class='code'><code class='julia'>println(&quot;Hello Julia!&quot;)
+using .MGraph</code></pre>
+
+<pre class='code'><code class='julia'>Hello Julia!</code></pre>
+
+<h2>Export Functions</h2>
+
+<p><a name="gnew"> </a>
+<strong>gnew(x; mode=&quot;directed&quot;)</strong></p>
+
+<blockquote>
+<p>Create adjacency matrices as NamedArray objects for further use.</p>
+
+<p>This function ...</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>x</em> - an adjacency matrix</li>
+<li><em>type</em> - a graph type, one of 'angie', 'band', 'barabasi', 'circle', 'cluster', 'hubs', 'random', 'regular' or 'werner', default: random</li>
+<li><em>mode</em> - either 'undirected' or 'directed', default: 'directed'</li>
+<li><em>nodes</em> - number of nodes for a given type, default: 10</li>
+<li>number_ - of edges for a given type, not used for type 'barabasi', default: 12</li>
+<li><em>m</em> - number of edges added in each iteration of type is 'barabasi', default: 1</li>
+<li><em>k</em> - the degree for a regular graph, or the number of clusters for a cluster graph or the number of hubs for a 
+hubs graph, default: 2</li>
+<li><em>p</em> - the probabilty for edges if type is gnp</li>
+<li><em>power</em> - the power for preferential attachment if type is 'barabasi', 1 is linear preferential attachment, 
+below one is sublinear, smaller hubs, 0 is no hobs, above 1 is super linear with super hubs, default: 1
+</li></ul>
+
+<p>Examples:</p>
+</blockquote>
+
+<pre class='code'><code class='julia'># Build using adjacency matrix
+M = zeros(Int64,6,6)
+pairs = [(1,3), (3,1), (2,3), (3,2), (3,4), (4,3), (4,5), (5,4), (4,6), (6,4), (5,6), (6,5)]
+M[CartesianIndex.(pairs)] .= 1
+M_graph = gnew(M)
+m_dot = graph2dot(M_graph,mode=&quot;undirected&quot;,type=&quot;werner&quot;)
+kroki(m_dot,type=&quot;graphviz&quot;,name=&quot;m_dot-for-docu&quot;)
+
+# Build using type
+W = gnew(type=&quot;werner&quot;, mode = &quot;undirected&quot;)
+w_dot = graph2dot(W,mode=&quot;undirected&quot;,type=&quot;werner&quot;)
+kroki(w_dot,type=&quot;graphviz&quot;,name=&quot;w_dot-for-docu&quot;)
+
+A = gnew(type=&quot;angie&quot;,nodes=8,edges=9)
+a_dot = graph2dot(A,mode=&quot;directed&quot;,type=&quot;angie&quot;)
+kroki(a_dot,type=&quot;graphviz&quot;,name=&quot;a_dot-for-docu&quot;)
+
+B = gnew(type=&quot;band&quot;,nodes=8)
+b_dot = graph2dot(C,mode=&quot;directed&quot;,type=&quot;band&quot;)
+kroki(b_dot,type=&quot;graphviz&quot;,name=&quot;b_dot-for-docu&quot;)
+
+C = gnew(type=&quot;circle&quot;,nodes=8)
+c_dot = graph2dot(C,mode=&quot;directed&quot;,type=&quot;circle&quot;)
+kroki(c_dot,type=&quot;graphviz&quot;,name=&quot;c_dot-for-docu&quot;)</code></pre>
+
+<table class="table">
+<thead>
+  <tr>
+    <th style="text-align: center">Werner (Matrix)</th>
+    <th style="text-align: center">Werner (Type)</th>
+    <th style="text-align: center">Angie</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td style="text-align: center"><img src="img/m_dot-for-docu.png" width="250"></td>
+
+Error: Cannot open '/home/nono/workspace/UP/snha-project/snha4jl/docs/img/m_dot-for-docu.png'!
+
+
+    <td style="text-align: center"><img src="img/w_dot-for-docu.png" width="250"></td>
+
+Error: Cannot open '/home/nono/workspace/UP/snha-project/snha4jl/docs/img/w_dot-for-docu.png'!
+
+
+    <td style="text-align: center"><img src="img/a_dot-for-docu.png" width="250"></td>
+
+Error: Cannot open '/home/nono/workspace/UP/snha-project/snha4jl/docs/img/a_dot-for-docu.png'!
+
+
+  </tr>
+  <tr>
+    <td style="text-align: center"><strong>Band</strong></td>
+    <td style="text-align: center"><strong>Circle</strong></td>
+    <td style="text-align: center"></td>
+  </tr>
+  <tr>
+    <td style="text-align: center"><img src="img/b_dot-for-docu.png" width="250"></td>
+
+Error: Cannot open '/home/nono/workspace/UP/snha-project/snha4jl/docs/img/b_dot-for-docu.png'!
+
+
+    <td style="text-align: center"><img src="img/c_dot-for-docu.png" width="250"></td>
+
+Error: Cannot open '/home/nono/workspace/UP/snha-project/snha4jl/docs/img/c_dot-for-docu.png'!
+
+
+    <td style="text-align: center"></td>
+  </tr>
+</tbody>
+</table>
+
+
+<p><a name="asg"> </a>
+<strong>asg(data,method=&quot;pearson&quot;)</strong></p>
+
+<blockquote>
+<p>Create an association chain graph.</p>
+
+<p>This function returns graphs which are build from association chains.
+  For details on the algorithm see <a href="https://doi.org/10.1127/anthranz/2019/1027">Groth et al. 2019</a> and <a href="https://doi.org/10.3390/ijerph18041741">Hermanussen et. al. 2021</a>.</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>data</em>  - a dataframe where network nodes are the rownames and data variables are in the columns</li>
+<li><em>alpha</em> - confidence threshold for p-value edge cutting after all chains were generated, default: 0.01</li>
+<li><em>method</em> - method to calculate correlation/association values, can be pearson, spearman, kendall, cor.fk (requires pcaPP package), rpart or mi (mutual information) default: 'pearson'.</li>
+<li><em>threshold</em> - correlation coefficient threshold which r values should be used for chain generation, default: 0.1</li>
+<li><em>check.singles</em> - should isolated nodes connected with sufficent high R^2 and significance, default: false</li>
+<li><em>chains.clean</em> - should shorter chains be removed if they are in longer chains, and should reverse dubplicated chains be removed, default: true</li>
+<li><em>prob</em> - should probabilities be computed for each edge using bootstrapping. Only in this case the parameters starting with prob are used, default: false</li>
+<li><em>prob.threshold</em> - threshold to set an edge, a value of 0.5 means, that the edge must be found in 50% of all samplings, default: 0.2</li>
+<li><em>prob.n</em> - number of boostrap samples to be taken, default: 25
+</li></ul>
+
+<p>Returns:  An asg graph data object with the fields theta for the adjacency matrix, sigma for the correlation matrix, chains for the association chains and data representing the input data.</p>
+
+<p>Examples:</p>
+
+<pre class='code'><code class='jl'>data(swiss)
+swg=asg(swiss,method='spearman')
+names(swg)
+swg[&quot;theta&quot;]
+round(sigma,2)
+# resampling approach
+swg=asg(swiss,method='spearman',check.singles=true,prob=true)
+swg[&quot;theta&quot;]
+swg[&quot;probabilities&quot;]</code></pre>
+</blockquote>
+
+<p><a name="autonames"> </a>
+<strong>autonames(n, prefix)</strong></p>
+
+<blockquote>
+<p>Create names for nodes and other data structures.</p>
+
+<p>This function aids in creating standard node labels for graphs.</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>prefix</em> - one or more prefixes to be used when labels &gt; 26</li>
+<li><em>n</em> - how many labels
+</li></ul>
+
+<p>Examples:</p>
+
+<pre class='code'><code class='jl'>  print(autonames(12))
+  print(autonames(12,LETTERS[1:4]))
+  print(autonames(12,&quot;R&quot;))</code></pre>
+</blockquote>
+
+<p><a name="components"> </a>
+<strong>components(g)</strong></p>
+
+<blockquote>
+<p>Return graph components, nodes which are connected are within the same component.</p>
+
+<p>This function ...</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>g</em> - anadjacency matrix
+Examples:
+</li></ul>
+
+<pre class='code'><code class='jl'>  G # node G is single
+  components(G)</code></pre>
+</blockquote>
+
+<p><a name="d2u"> </a>
+<strong>d2u(g)</strong></p>
+
+<blockquote>
+<p>Create an undirected graph out of a directed graph with the same number of edges.</p>
+
+<p>This function gets an directed graph and convertes all edges from directed ones to undirected ones.</p>
+
+<p>The number of edges should stay the same, the edge sign (+ or -) stays the same.</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>g</em> - a mgraph object or an adjacency matrix
+</li></ul>
+
+<p>Examples:</p>
+
+<pre class='code'><code class='jl'>  A=gnew(type=&quot;angie&quot;,nodes=4,edges=4)
+  U=d2u(A)
+  print(A)
+  print(U)</code></pre>
+</blockquote>
+
+<p><a name="deg"> </a>
+<strong>deg(g,mode=&quot;undirected&quot;)</strong></p>
+
+<blockquote>
+<p>Return the number of undirected or incoming and outgoing edges.</p>
+
+<p>This function returns degree centrality measure. For other centrality measures for single nodes</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>g</em> - a mgraph object or an adjacency matrix</li>
+<li><em>mode</em> - either 'undirected', 'out' or 'in', default: 'undirected'
+</li></ul>
+
+<p>Examples:</p>
+
+<pre class='code'><code class='jl'>  A=gnew(type=&quot;regular&quot;,nodes=8,k=3)
+  print(A)
+  print(d2u(A)) 
+  print(deg(A))
+  print(deg(A))
+  print(deg(A))</code></pre>
+</blockquote>
+
+<p><a name="edgeDirShuffle"> </a>
+<strong>edgeDirShuffle(x)</strong></p>
+
+<blockquote>
+<p>Shuffle the direction of edges in an directed graph without multiedges.</p>
+
+<p>This function allow to randomize the direction of the edges in a directed graph.</p>
+
+<p>The total number of edges remains constant. The nodes which are connected remain the same.</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>x</em> - an adjacency matrix.
+</li></ul>
+
+<p>Returns: - a mgraph object with shuffled edge directions</p>
+
+<p>Examples:</p>
+
+<pre class='code'><code class='jl'>  A=gnew(type=&quot;angie&quot;,nodes=6,edges=8)
+  B=edgeDirShuffle(A)
+  print(A)
+  print(B)</code></pre>
+</blockquote>
+
+<p><a name="graph2dot"> </a>
+<strong>graph2dot(g,type=&quot;digraph&quot;)</strong></p>
+
+<blockquote>
+<p>Convert a graph to a Graphviz dot representation.</p>
+
+<p>This gets a graph or adjacency matrix and creates dot graph representation which can used to create
+  diagram images using the kroki diagram services using the <a href="#kroki">kroki</a> function.</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>g</em> - graph or adjacency matrix</li>
+<li><em>mode</em>- directed or undirected
+  -</li>
+<li><em>type</em> - specific type of graph layout
+  -<em>shape</em> - graphviz node shape
+  -<em>style</em> - graphviz node style
+  -<em>fillcolor</em> - graphviz node color
+Examples:
+</li></ul>
+
+<pre class='code'><code class='jl'>  using NamedArrays
+  L=string.('A':'Z')[1:3]
+  M=NamedArray(zeros(Int64,3,3),(L,L),(&quot;row&quot;, &quot;col&quot;))
+  M[&quot;A&quot;,&quot;B&quot;]=1
+  M[&quot;B&quot;,&quot;C&quot;]=1
+  M
+  g=graph2dot(M)
+  url=kroki(g,type=&quot;graphviz&quot;)
+  print(url)</code></pre>
+
+<p>In one line directly within the Markdown text could write.</p>
+
+<pre class='code'><code>  ![ ](` jl kroki(graph2dot(M),type=&quot;graphviz&quot;)`)</code></pre>
+
+<p><img src="" alt=" "/></p>
+
+Error: Cannot open '/home/nono/workspace/UP/snha-project/snha4jl/docs/<p><img src="" alt=" "/></p>'!
+
+
+
+<p>Here an undirected graph example:</p>
+
+<pre class='code'><code> # next three lines should be on one line
+ ![ ](` jl kroki(graph2dot(
+     gnew(type=&quot;angie&quot;,mode=&quot;undirected&quot;),type=&quot;graph&quot;,fillcolor=&quot;skyblue&quot;),
+     type=&quot;graphviz&quot;)`)</code></pre>
+
+<p>![ ](<code>jl kroki(
+          graph2dot(
+          new(type=&quot;angie&quot;,mode=&quot;undirected&quot;),
+          type=&quot;graph&quot;,fillcolor=&quot;skyblue&quot;),
+          type=&quot;graphviz&quot;)</code>)</p>
+</blockquote>
+
+<p><a name="kroki"> </a>
+<strong>kroki(text,type=&quot;ditaa&quot;,ext=&quot;png&quot;)</strong></p>
+
+<blockquote>
+<p>Create diagrams using the online tool <a href="https://kroki.io">kroki</a>.</p>
+
+<p>This function is creates a URL which can be easily embedded into Markdown code for displaying
+  diagrams supported by the online tool <a href="https://kroki.io">kroki.io</a>.
+  There is as well an online diagram editor, see here <a href="https://niolesk.top/">niolesk</a>.</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>text</em> - some diagram code, default: &quot;A --&gt; B&quot;</li>
+<li><em>filename</em> - some input file, either <em>text</em> or <em>file</em> must be given, default: nothing</li>
+<li><em>type</em> - diagram type, supported is ditaa, graphviz, and many others, see the kroki website, default: ditaa</li>
+<li><em>ext</em> - file extension, usally 'png', 'svg' or 'pdf', default: 'png'</li>
+<li><em>cache</em> - should the image be cached locally using crc32 digest files in an <em>img</em> folder, default: true
+</li></ul>
+
+<p>Examples:</p>
+
+<pre class='code'><code class='jl'>  url1=kroki(&quot;
+  digraph g { 
+     rankdir=\&quot;LR\&quot;;
+     node[style=filled,fillcolor=salmon];
+     A -&gt; B -&gt; C ; 
+  }&quot;,
+  type=&quot;graphviz&quot;)
+  url2=kroki(&quot;
+  +---------+    +--------+
+  |    AcEEF+---&gt;+   BcFEE+
+  +---------+    +--------+
+  &quot;)</code></pre>
+
+<p>To embed the image you can use Markdown code like here:</p>
+
+<pre class='code'><code>  # remove space before r letter
+   ![ ](` jl url1 `)</code></pre>
+
+<p>Here the output:</p>
+
+<p><img src="" alt=" "/></p>
+
+Error: Cannot open '/home/nono/workspace/UP/snha-project/snha4jl/docs/<p><img src="" alt=" "/></p>'!
+
+
+
+<p>And here the image for the second diagram, a Ditaa diagram:</p>
+
+<p><img src="" alt=" "/></p>
+
+Error: Cannot open '/home/nono/workspace/UP/snha-project/snha4jl/docs/<p><img src="" alt=" "/></p>'!
+
+
+
+<p>The diagram code can be read as well from a file here a Ditaa file:</p>
+
+<pre class='code'><code class='jl'>  url3=kroki(filename=&quot;hw.ditaa&quot;)</code></pre>
+
+<p>&lt;img src=&quot;&quot;&gt;</img></p>
+
+<p>For images stored in files it can be even easier without intermediate variables like this:</p>
+
+<pre class='code'><code>  ![ ](`jl kroki(filename=&quot;hw.ditaa&quot;)`)</code></pre>
+
+<p>Here another example:</p>
+
+<pre class='code'><code class='jl'>kroki(graph2dot(gnew(type=&quot;werner&quot;),type=&quot;digraph&quot;),type=&quot;graphviz&quot;)</code></pre>
+
+<p>See also:</p>
+
+<ul>
+<li><a href="#graph2dot">graph2dot</a> - converting graphs to dot code which can be then send to the kroki service</li>
+<li><a href="http://ditaa.sourceforge.net/">ditaa documentation I</a></li>
+<li><a href="https://github.com/stathissideris/ditaa">ditaa documentation II</a></li>
+<li><a href="https://ivanceras.github.io/content/Svgbob.html">svgbob documentation</a></li>
+<li><a href="https://plantuml.com/">plantuml documention</a></li>
+<li><a href="https://graphviz.org/documentation/">graphviz documentation</a></li>
+<li><a href="https://kroki.io/">kroki documentation</a></li>
+<li><a href="https://niolesk.top/#https://kroki.io/plantuml/svg/eNplj0FvwjAMhe_5FVZP40CgaNMuUGkcdttp3Kc0NSVq4lRxGNKm_fe1HULuuD37-bOfuXPUm2QChEjRnlIMCDmdUfHNSYY6xh42a9Fsegflk-yYlOLlcHK2I2SGtX4WZm9sZ1o8uOzxxbuWAlIGj8cshs6M1jDuY2owyU2P8jAezdnn10j53X0hlBsZFW021Pq7HaVSNw-KN-OogG8F8BAGqT8dXhZjxW4cyJEW6kcC-yHWFagHqW0MfaThhYmaVyE26P_x27qaDmXeruqqAMMw1h-ZlRI4aF3dX7hOwm5XzfIKDctlNcshPT1tFa8JPYAj-Zf5F065sqM=">niolesk editor</a></li></ul>
+
+
+</blockquote>
+
+<p><a name="nodeColors"> </a>
+<strong>nodeColors(g,colors=c(&quot;skyblue&quot;,&quot;grey80&quot;,&quot;salmon&quot;)</strong></p>
+
+<blockquote>
+<p>Returns node colors for directed graphs.</p>
+
+<p>This function simplifies automatic color coding of nodes for directed graphs.
+  Nodes will be colored based on their degree properties, based
+  on their incoming and outcoming edges.</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>g</em> - an adjacency matrix</li>
+<li><em>col</em> - default colors for nodes with only incoming, in- and outgoing and only outgoing edges, default: c(&quot;skyblue&quot;,&quot;grey80&quot;,&quot;salmon&quot;)
+</li></ul>
+
+<p>Examples:</p>
+
+<pre class='code'><code class='jl'>  A=gnew(type=&quot;random&quot;,nodes=6,edges=8)
+  cols=nodeColors(A)
+  degree(A,mode=&quot;in&quot;)
+  degree(A,mode=&quot;out&quot;)
+  cols
+  plot(A, layout=&quot;star&quot;)
+  plot(A, layout=&quot;star&quot;,vertex.color=cols) </code></pre><p><a name="shortest_paths"> </a>
+<strong>shortest_paths(g)</strong></p>
+
+<p>Calculate the shortest paths between all graph nodes.</p>
+
+<p>This function ...</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>g</em> - an adjacency matrix created with <em>new</em>.
+ </li></ul>
+
+<p>Returns: a matrix with the shortest paths</p>
+
+<p>Examples:</p>
+
+<pre class='code'><code class='jl'>  G
+  shortest_paths(G)
+  shortest_paths(G,mode=&quot;undirected&quot;)</code></pre>
+</blockquote>
+
+<p><a name="simple.paths"> </a>
+simple.paths(g)<em></em></p>
+
+<blockquote>
+<p>Return all simple paths between two nodes.</p>
+
+<p>This function calculates all existing simple paths.<br/>
+  A path is simple if no vertice is visited more than once.</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>g</em> - an adjacency matrix</li>
+<li><em>start</em> - the start node </li>
+<li><em>end</em> - the end node</li>
+<li><em>shortest</em> - should only the shortest paths(s) be returned, default: FALSE
+ </li></ul>
+
+<p>Returns: a list with all simple paths or only with the shortest path(s) if the argument <em>shortest</em> is set to TRUE</p>
+</blockquote>
+
+<p><a name="u2d"> </a>
+<strong>u2d(g)</strong></p>
+
+<blockquote>
+<p>Create a directed graph out of an undirected graph.</p>
+
+<p>This function creates a directed graph from an undirected one by the given input nodes. Input nodes can be chosen by names or a number for random selection of input nodes will be given.
+Input nodes will have at least shortest path distance to other input nodes of pathlength two.
+Selected input nodes will draw in each iteration outgoing edges to other nodes in the nth iteration neighborhood. The input
+nodes will alternatively select the next edges on the path to not visited nodes. All edges will be only visited onces.</p>
+
+<p>Arguments:</p>
+
+<ul>
+<li><em>g</em> - an adj. matrix created with <em>gnew</em>.</li>
+<li><em>input</em> - number or names of input nodes in the graph, if number of input nodes is smaller than number of components, for each component one input node is automatically created.</li>
+<li><em>negative</em> proportion of inhibitive associations in the network value between 0 and 1 are acceptable, Default 0.0</li>
+<li><em>shuffle</em> - should just the edge directions beeing shuffled, if TRUE the graph will be very random without a real structure or chains of associations, default: FALSE
+ </li></ul>
+
+<p>Returns: an adjacency matrix</p>
+
+<p>Examples:</p>
+
+<pre class='code'><code class='jl'>  G=gnew(type=&quot;angie&quot;,nodes=7,edges=9)
+  deg(G,mode='in')
+  U=d2u(G)
+  H=u2d(U,input=c(&quot;G&quot;,&quot;E&quot;))
+  G == H
+  I=u2d(U,shuffle=true)
+  G == I</code></pre><h2>Helper Functions</h2><p><a name="pmatch"> </a>
+<strong>pmatch(type::String, types::Tuple{Vararg{String}})</strong></p>
+
+<p>Partial match helper similar to R's pmatch.</p>
+</blockquote>
+
+<p><a name="getChains"> </a>
+<strong>getMiddleChain(forchain,mt2)</strong></p>
+
+
+
+</body>
+</html>
+
