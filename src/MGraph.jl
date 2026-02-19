@@ -88,7 +88,10 @@ export asg, centrality, shortest_paths, simple_paths, components, closeness, u2d
 > Examples:
 
 ```{jl label=gnew, results="hide"}
+
+using MGraph
 # Build using adjacency matrix
+println(joinpath(abspath(joinpath(pathof(@__MODULE__), "..")), "img"))
 M = zeros(Int64,6,6)
 pairs = [(1,3), (3,1), (2,3), (3,2), (3,4), (4,3), (4,5), (5,4), (4,6), (6,4), (5,6), (6,5)]
 M[CartesianIndex.(pairs)] .= 1
@@ -112,13 +115,14 @@ kroki(b_dot,type="graphviz",name="b_dot-for-docu")
 C = gnew(type="circle",nodes=8)
 c_dot = graph2dot(C,mode="directed",type="circle")
 kroki(c_dot,type="graphviz",name="c_dot-for-docu")
+
 ```
 
 | Werner (Matrix) | Werner (Type) | Angie |
 | :---: | :---: | :---: |
-| <img src="img/m_dot-for-docu.png" width="250"> | <img src="img/w_dot-for-docu.png" width="250"> | <img src="img/a_dot-for-docu.png" width="250"> |
+| <img src="../img/m_dot-for-docu.png" width="250"> | <img src="../img/w_dot-for-docu.png" width="250"> | <img src="../img/a_dot-for-docu.png" width="250"> |
 | **Band** | **Circle** | |
-| <img src="img/b_dot-for-docu.png" width="250"> | <img src="img/c_dot-for-docu.png" width="250"> | |
+| <img src="../img/b_dot-for-docu.png" width="250"> | <img src="../img/c_dot-for-docu.png" width="250"> | |
 
 """
 
@@ -1077,8 +1081,17 @@ function kroki(text="A --> B"; filename=nothing, type="ditaa", ext="png", cache=
     safe_b64 = replace(b64string, "+" => "-", "/" => "_", "=" => "")
     url = "https://kroki.io/$type/$ext/$safe_b64"
 
-    if !isdir("img")
-        mkdir("img")
+    mod_path = pathof(@__MODULE__)
+    if isnothing(mod_path)
+        base_path = @__DIR__
+    else
+        base_path = dirname(mod_path)
+    end
+    println(pathof(@__MODULE__))
+    img_dir = joinpath(abspath(joinpath(base_path, "..")), "img")
+
+    if !isdir(img_dir)
+        mkpath(img_dir)
     end
 
     if isnothing(name)
@@ -1087,7 +1100,7 @@ function kroki(text="A --> B"; filename=nothing, type="ditaa", ext="png", cache=
     else
         out_filename = "$(name).$(ext)"
     end
-    imgname = joinpath("img", out_filename)
+    imgname = joinpath(img_dir, out_filename)
 
     if !isfile(imgname) || !cache
         print("Downloading $(out_filename)...\n")
