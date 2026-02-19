@@ -96,7 +96,7 @@ julia>  show(stdout, "text/plain", g_asg["theta"])
 
 # Create image
 julia> g_dot = graph2dot(g_asg["theta"],mode="undirected",type="werner")
-julia> kroki(g_dot,type="graphviz",name=i)
+julia> kroki(g_dot,type="graphviz",name="trial-werner")
 ```
 
 ### Sample image
