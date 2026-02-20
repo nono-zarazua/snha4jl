@@ -820,56 +820,43 @@ end
 
 > Arguments:
 
-> - _g_ - graph or adjacency matrix
+> - _x_ - adjacency matrix
   - _mode_- directed or undirected
-  -
   - _type_ - specific type of graph layout
-  -_shape_ - graphviz node shape
-  -_style_ - graphviz node style
-  -_fillcolor_ - graphviz node color
-> Examples:
+  - _custype_ - optional string to specify type="custom"
+  - _shape_ - graphviz node shape
+  - _style_ - graphviz node style
+  - _thecol_ - specific node colors: String for all the same color, Vector{String} to pass a list of colors, or Dict{Any, String} to assign specific colors to each node.
+  - _inout_color_ - 3-element Vector{String} or Tuple{Vararg{String}} for source, intermediate, and sink nodes in directed graphs
+
+  > Examples:
 
 > ```{jl label=graph2dot}
-  using NamedArrays
+
+  using MGraph
   L=string.('A':'Z')[1:3]
   M=NamedArray(zeros(Int64,3,3),(L,L),("row", "col"))
   M["A","B"]=1
   M["B","C"]=1
   M
   g=graph2dot(M)
-  url=kroki(g,type="graphviz")
-  print(url)
-> ```
-
-> In one line directly within the Markdown text could write.
+  kroki(g,type="graphviz", name="graph2dot-example")
 
 > ```
-  ![ ](` jl kroki(graph2dot(M),type="graphviz")`)
-> ```
-
-> ![ ](`jl kroki(graph2dot(M),type="graphviz")`)
-
-> Here an undirected graph example:
-
-> ```
- # next three lines should be on one line
- ![ ](` jl kroki(graph2dot(
-     gnew(type="angie",mode="undirected"),type="graph",fillcolor="skyblue"),
-     type="graphviz")`)
-> ```
-
-> ![ ](`jl kroki(
-          graph2dot(
-          new(type="angie",mode="undirected"),
-          type="graph",fillcolor="skyblue"),
-          type="graphviz")`)
-
-
 
 """
 
 
-function graph2dot(x;  mode="directed", type="custom", custype::Union{String, Nothing}=nothing,shape="circle", style="filled", fillcolor="salmon", inout_color=["salmon","grey80","skyblue"])
+function graph2dot(x;
+    mode="directed",
+    type="custom",
+    custype::Union{String, Nothing}=nothing,
+    shape="circle",
+    style="filled",
+    thecol::Union{String, Vector{String}, Dict{<:Any, String}, Nothing}=nothing,
+    inout_color::Union{String, AbstractVector{String}, Tuple{Vararg{String}}, Nothing} = nothing
+)
+
     # Define Layout Strategies
     # "layout" determines the engine (dot, neato, circo, etc.)
     # "rankdir" only applies to the 'dot' engine.
@@ -901,76 +888,113 @@ function graph2dot(x;  mode="directed", type="custom", custype::Union{String, No
         nms = NamedArrays.names(xmat, 1)
     end
 
+    diccionario = false
+    if mode == "directed"
+        if !isnothing(inout_color)
+            if !isnothing(thecol)
+                @warn "Both 'thecol' and 'inout_color' provided for a directed graph. 'inout_color' will take precedence."
+            end
+        
+            if length(inout_color) != 3
+                throw(ArgumentError("inout_color must have exactly 3 elements. Got $(length(inout_color))."))
+            end
+
+            precol = nodeColors(xmat,col=inout_color)
+        elseif !isnothing(thecol)
+            if !isa(thecol, String) && length(thecol) != size(xmat,1)
+                error("""
+                    Color vector or dictionary must match the number of nodes.
+                    Length thecol: $(length(thecol))
+                    Number nodes: $(size(xmat, 1))
+                    """)
+            end
+            if isa(thecol,Dict)
+                diccionario = true
+                colors = thecol
+            elseif isa(thecol,String)
+                precol = fill(thecol, size(xmat,1))
+            else
+                precol = thecol
+            end
+
+        else
+            precol = fill("salmon", size(xmat,1))
+        end
+    else # mode == "undirected"
+        if !isnothing(inout_color)
+            @warn "Argument 'inout_color' is ignored for undirected graphs. Use 'thecol' instead."
+        end
+
+        if isnothing(thecol)
+            precol = fill("salmon", size(xmat, 1))
+        elseif isa(thecol,String)
+            precol = fill(thecol, size(xmat, 1))
+        else
+            if !isa(thecol, String) && length(thecol) != size(xmat, 1)
+                error("""
+                    Color vector or dictionary must match the number of nodes.
+                    Length thecol: $(length(thecol))
+                    Number nodes: $(size(xmat, 1))
+                    """)
+            end
+            if isa(thecol, Dict)
+                diccionario = true
+                colors = thecol
+            else
+                precol = thecol
+            end
+        end
+    end
+
+    all_keys = string.(nms)
+    if !diccionario
+        colors = Dict(zip(all_keys, precol))
+    end 
+
+    node_style = "    node [shape=$shape, style=$style];\n"
     str = ""
+    if type == "werner"
+        str *= """
+            \"$(all_keys[1])\" [pos="0,2!", fillcolor=\"$(colors[all_keys[1]])\"];
+            \"$(all_keys[2])\" [pos="0,-0!", fillcolor=\"$(colors[all_keys[2]])\"];
+            \"$(all_keys[3])\" [pos="1,1!", fillcolor=\"$(colors[all_keys[3]])\"];
+            \"$(all_keys[4])\" [pos="2.5,1!", fillcolor=\"$(colors[all_keys[4]])\"];
+            \"$(all_keys[5])\" [pos="3.5,2!", fillcolor=\"$(colors[all_keys[5]])\"];
+            \"$(all_keys[6])\" [pos="3.5,0!", fillcolor=\"$(colors[all_keys[6]])\"];
+        """
+    else
+        for name in all_keys
+            str *= "    \"$name\" [fillcolor=\"$(colors[name])\"];\n"
+        end
+    end
+
     if mode == "directed"
         start = "digraph"
-        if fillcolor == "inout"
-            node_style = "node [shape=$shape, style=$style];\n"
-            colors = nodeColors(xmat,col=inout_color)
-            if type == "werner"
-                str *= """A [pos="0,2!", fillcolor=$(colors[1])];\n     
-                    B [pos="0,-0!", fillcolor=$(colors[2])];\n  
-                    C [pos="1,1!", fillcolor=$(colors[3])];\n  
-                    D [pos="2.5,1!", fillcolor=$(colors[4])];\n  
-                    E [pos="3.5,2!", fillcolor=$(colors[5])];\n  
-                    F [pos="3.5,0!", fillcolor=$(colors[6])];\n"""
-            else
-                for i in axes(colors,1)
-                    str *= "$(nms[i]) [fillcolor=$(colors[i])];\n"
-                end
-            end
-        else
-            node_style = "node [shape=$shape, style=$style, fillcolor=$fillcolor];\n"
-            if type == "werner"
-                str *= """A [pos="0,2!"];\n     
-                    B [pos="0,-0!"];\n  
-                    C [pos="1,1!"];\n  
-                    D [pos="2.5,1!"];\n  
-                    E [pos="3.5,2!"];\n  
-                    F [pos="3.5,0!"];\n"""
-            elseif type == "band"
-                str *= """ultimo [fillcolor=transparent, color=transparent, fontcolor=transparent];\n
-                        $(nms[end]) -> ultimo [color=transparent];\n
-                        ultimo -> $(nms[1]) [color=transparent];\n
-                """
-            end
-        end
+        conn = "->"
     else
         start = "graph"
-        node_style = "node [shape=$shape, style=$style, fillcolor=$fillcolor];\n"
-        if type == "werner"
-            str *= """A [pos="0,2!"];\n     
-                    B [pos="0,-0!"];\n  
-                    C [pos="1,1!"];\n  
-                    D [pos="2.5,1!"];\n  
-                    E [pos="3.5,2!"];\n  
-                    F [pos="3.5,0!"];\n"""
-        elseif type == "band"
-            str *= """ultimo [fillcolor=transparent, color=transparent, fontcolor=transparent];\n
-                    $(nms[end]) -- ultimo [color=transparent];\n
-                    ultimo -- $(nms[1]) [color=transparent];\n
-            """
-        end
+        conn = "--"
     end
 
     for i in 1:(size(xmat,2)-1)
         for j in (i+1):size(xmat,2)
-            # Edge i -> j
             if xmat[i,j] == 1
-                if mode == "directed"
-                    str *= "$(nms[i]) -> $(nms[j]);\n"
-                else
-                    str *= "$(nms[i]) -- $(nms[j]);\n"
-                end
+                str *= "    \"$(all_keys[i])\" $conn \"$(all_keys[j])\";\n"
             end
             
             # Edge j -> i (Only needed for directed, or if matrix is asymmetric)
-            if xmat[j,i] == 1
-                if mode == "directed"
-                    str *= "$(nms[j]) -> $(nms[i]);\n"
-                end
+            if xmat[j,i] == 1 && mode == "directed"
+                str *= "    \"$(all_keys[j])\" $conn \"$(all_keys[i])\";\n"
             end
         end
+    end
+
+    if type == "band"
+        str *= """
+        ultimo [fillcolor=transparent, color=transparent, fontcolor=transparent];
+        \"$(all_keys[end])\" $conn ultimo [color=transparent];
+        ultimo $conn \"$(all_keys[1])\" [color=transparent];
+        """
     end
 
     header = "$start g {\n$config\n"
