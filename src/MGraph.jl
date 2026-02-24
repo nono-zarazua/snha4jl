@@ -316,7 +316,7 @@ end
 
 > Examples:
 
-> ```{jl label=asg,fig=true,fig.width=7,fig.height=3}
+> ```{jl label=asg}
 data(swiss)
 swg=asg(swiss,method='spearman')
 names(swg)
