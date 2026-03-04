@@ -12,7 +12,7 @@ include("MGraph.jl")
 include("datasets.jl")
 
 # 3. Export the functions you want users to be able to call
-export load_decathlon, load_birthwt
+export load_decathlon, load_birthwt, load_swiss
 export gnew, d2u, autonames, deg, graph2dot, kroki, graph2data, nodeColors
 export asg, centrality, shortest_paths, simple_paths, components, closeness, u2d
 

@@ -29,4 +29,18 @@ function load_birthwt()
     filepath = joinpath(@__DIR__, "..", "data", "birthwt.csv")
     
     return CSV.read(filepath, DataFrame)
-    end
+end
+
+
+"""
+    load_swiss()
+Loads the MASS swiss dataset as a DataFrame.
+"""
+
+function load_swiss()
+    # @__DIR__ is the 'src' folder.
+    # "..", "data" means "go up one level, then into the data folder"
+    filepath = joinpath(@__DIR__, "..", "data", "swiss.csv")
+    
+    return CSV.read(filepath, DataFrame)
+end

@@ -350,6 +350,27 @@ println("\n" * "-"^50)
 kroki(bwt_prob_dot,type="graphviz",name="birthwt_dot-with-prob-for-docu"); nothing
 println("\n" * "-"^50)
 
+# Swiss Data
+swiss = load_swiss(); nothing
+swg=asg(swiss,method="spearman"); nothing
+println("Adjacency Matrix:")
+show(stdout, "text/plain", swg["theta"])
+println("\n" * "-"^50)
+swiss_dot = graph2dot(swg["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;"); nothing
+println("\n" * "-"^50)
+kroki(swiss_dot,type="graphviz",name="swiss_dot-for-docu"); nothing
+println("\n" * "-"^50)
+
+# resampling approach
+swg_prob=asg(swiss,method="spearman",check_singles=true,prob=true); nothing
+println("Adjacency Matrix for Resampling:")
+show(stdout, "text/plain", swg_prob["theta"])
+println("\n" * "-"^50)
+swiss_prob_dot = graph2dot(swg_prob["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;"); nothing
+println("\n" * "-"^50)
+kroki(swiss_prob_dot,type="graphviz",name="swiss_dot-with-prob-for-docu"); nothing
+println("\n" * "-"^50)
+
 
 ```
 
@@ -1595,7 +1616,8 @@ function removeNonsignifGraphEdges(A::NamedArray,p_value;alpha=0.05,kwargs...)
     for i in 1:(size(A,2)-1)
         for j in i:size(A,2)
             if p_value[i,j] > alpha
-                A[i,j] = A[j,i]
+                A[i,j] = 0 
+                A[j,i] = 0
             end
         end
     end
