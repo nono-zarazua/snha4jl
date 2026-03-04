@@ -310,25 +310,52 @@ end
 ```{jl label=asg}
 
 using snha4jl
-decathlon = load_decathlon()
-dcg=asg(decathlon,method="spearman")
-names(swg)
-dcg["theta"]
+
+# Decathlon Data
+decathlon = load_decathlon(); nothing
+dcg=asg(decathlon,method="spearman"); nothing
+println("Adjacency Matrix:")
 show(stdout, "text/plain", dcg["theta"])
-println()
-d_dot = graph2dot(dcg["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;")
-kroki(d_dot,type="graphviz",name="decathlon_dot-for-docu")
+println("\n" * "-"^50)
+deca_dot = graph2dot(dcg["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;"); nothing
+kroki(deca_dot,type="graphviz",name="decathlon_dot-for-docu"); nothing
+println("\n" * "-"^50)
 
 # resampling approach
-dcg=asg(decathlon,method="spearman",check_singles=true,prob=true)
-show(stdout, "text/plain", dcg["theta"])
-println()
-show(stdout, "text/plain", dcg["probabilities"])
-println()
-d_dot = graph2dot(dcg["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;")
-kroki(d_dot,type="graphviz",name="decathlon_dot-with-prob-for-docu")
+dcg_prob=asg(decathlon,method="spearman",check_singles=true,prob=true); nothing
+println("Adjacency Matrix for Resampling:")
+show(stdout, "text/plain", dcg_prob["theta"])
+println("\n" * "-"^50)
+deca_prob_dot = graph2dot(dcg_prob["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;"); nothing
+kroki(deca_prob_dot,type="graphviz",name="decathlon_dot-with-prob-for-docu"); nothing
+
+# Birth Weight Data
+birthwt = load_birthwt(); nothing
+bwg=asg(birthwt,method="spearman"); nothing
+println("Adjacency Matrix:")
+show(stdout, "text/plain", bwg["theta"])
+println("\n" * "-"^50)
+bwt_dot = graph2dot(bwg["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;"); nothing
+println("\n" * "-"^50)
+kroki(bwt_dot,type="graphviz",name="birthwt_dot-for-docu"); nothing
+println("\n" * "-"^50)
+
+# resampling approach
+bwg_prob=asg(birthwt,method="spearman",check_singles=true,prob=true); nothing
+println("Adjacency Matrix for Resampling:")
+show(stdout, "text/plain", bwg_prob["theta"])
+println("\n" * "-"^50)
+bwt_prob_dot = graph2dot(bwg_prob["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;"); nothing
+println("\n" * "-"^50)
+kroki(bwt_prob_dot,type="graphviz",name="birthwt_dot-with-prob-for-docu"); nothing
+println("\n" * "-"^50)
+
 
 ```
+
+| Decathlon | Decathlon (resampling) | Birth Weight | Birth Weight (resampling) |
+| :---: | :---: | :---: | :---: |
+| <img src="../img/decathlon_dot-for-docu.png" width="250"> | <img src="../img/decathlon_dot-with-prob-for-docu.png" width="250"> | <img src="../img/birthwt_dot-for-docu.png" width="250"> | <img src="../img/birthwt_dot-with-prob-for-docu.png" width="250"> |
 
 """
 
@@ -349,8 +376,8 @@ function asg(data::DataFrame;alpha=0.01,method="pearson",threshold=0.01,
 
         as = asg(data,alpha=alpha,method=method,threshold=threshold,pcor=pcor,
                 check_singles=check_singles,prob=false)
-        prob_sum = NamedArray(zeros(Float64, ncols, ncols), (names(data), names(data)), ("row", "col"))
-        rand_prob = NamedArray(zeros(Float64, ncols, ncols), (names(data), names(data)), ("row", "col"))
+        prob_sum = NamedArray(zeros(Float64, ncol, ncol), (names(data), names(data)), ("row", "col"))
+        rand_prob = NamedArray(zeros(Float64, ncol, ncol), (names(data), names(data)), ("row", "col"))
         for i in 1:prob_n
             sam = rand(1:nrow, nrow)
             asi = asg(data[sam,:],alpha=alpha,method=method,threshold=threshold,
@@ -370,7 +397,7 @@ function asg(data::DataFrame;alpha=0.01,method="pearson",threshold=0.01,
         rand_prob = vec(rand_prob ./ prob_n)
         as["rand_probabilities"] = copy(as["probabilities"])
         as["rand_probabilities"][:] = rand_prob
-        as["theta"] = [as["probabilities"]] .> prob_threshold ? 1.0 : 0.0
+        as["theta"] = Float64.(as["probabilities"] .> prob_threshold)
         as["p_values"] = copy(as["theta"])
         vprob = vec(as["probabilities"])
         new_p_vals = map(x -> 1.0 - count(r -> x > r, rand_prob) / length(rand_prob), vprob)
@@ -1113,7 +1140,7 @@ function kroki(text="A --> B"; filename=nothing, type="ditaa", ext="png", cache=
     else
         base_path = dirname(mod_path)
     end
-    println(pathof(@__MODULE__))
+    #println(pathof(@__MODULE__))
     img_dir = joinpath(abspath(joinpath(base_path, "..")), "img")
 
     if !isdir(img_dir)
@@ -1665,7 +1692,7 @@ function custom_p_adjust(pvals::AbstractVector{T}, method::String="bonferroni") 
 end
 
 function corTest(data::DataFrame;method="pearson",p_adjust=nothing)
-    mat_df = Matrix(data)
+    mat_df = Float64.(Matrix(data))
     colnames = names(data)
     named_df = NamedArray(mat_df, (string.(1:size(mat_df,1)), colnames), ("Samples", "Vars"))
 
