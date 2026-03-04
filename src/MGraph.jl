@@ -377,7 +377,8 @@ println("\n" * "-"^50)
 | Decathlon | Decathlon (resampling) | Birth Weight | Birth Weight (resampling) |
 | :---: | :---: | :---: | :---: |
 | <img src="../img/decathlon_dot-for-docu.png" width="250"> | <img src="../img/decathlon_dot-with-prob-for-docu.png" width="250"> | <img src="../img/birthwt_dot-for-docu.png" width="250"> | <img src="../img/birthwt_dot-with-prob-for-docu.png" width="250"> |
-
+| **Swiss** | **Swiss (resampling)** | |
+| <img src="../img/swiss_dot-for-docu.png" width="250"> | <img src="../img/swiss_dot-with-prob-for-docu.png" width="250"> | |
 """
 
 function asg(data::DataFrame;alpha=0.01,method="pearson",threshold=0.01,
