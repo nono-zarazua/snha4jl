@@ -98,7 +98,7 @@ below one is sublinear, smaller hubs, 0 is no hobs, above 1 is super linear with
 <p>Examples:</p>
 </blockquote>
 
-<pre class='code'><code class='julia'>using MGraph
+<pre class='code'><code class='julia'>using snha4jl
 # Build using adjacency matrix
 println(joinpath(abspath(joinpath(pathof(@__MODULE__), &quot;..&quot;)), &quot;img&quot;))
 M = zeros(Int64,6,6)
@@ -124,111 +124,6 @@ kroki(b_dot,type=&quot;graphviz&quot;,name=&quot;b_dot-for-docu&quot;)
 C = gnew(type=&quot;circle&quot;,nodes=8)
 c_dot = graph2dot(C,mode=&quot;directed&quot;,type=&quot;circle&quot;)
 kroki(c_dot,type=&quot;graphviz&quot;,name=&quot;c_dot-for-docu&quot;)</code></pre>
-
-<pre class='code'><code class='julia'>6×6 Matrix{Int64}:
- 0  0  0  0  0  0
- 0  0  0  0  0  0
- 0  0  0  0  0  0
- 0  0  0  0  0  0
- 0  0  0  0  0  0
- 0  0  0  0  0  0
-12-element Vector{Tuple{Int64, Int64}}:
- (1, 3)
- (3, 1)
- (2, 3)
- (3, 2)
- (3, 4)
- (4, 3)
- (4, 5)
- (5, 4)
- (4, 6)
- (6, 4)
- (5, 6)
- (6, 5)
-12-element view(::Matrix{Int64}, CartesianIndex{2}[CartesianIndex(1, 3), CartesianIndex(3, 1), CartesianIndex(2, 3), CartesianIndex(3, 2), CartesianIndex(3, 4), CartesianIndex(4, 3), CartesianIndex(4, 5), CartesianIndex(5, 4), CartesianIndex(4, 6), CartesianIndex(6, 4), CartesianIndex(5, 6), CartesianIndex(6, 5)]) with eltype Int64:
- 1
- 1
- 1
- 1
- 1
- 1
- 1
- 1
- 1
- 1
- 1
- 1
-6×6 Named Matrix{Int64}
-row ╲ col │ A  B  C  D  E  F
-──────────┼─────────────────
-A         │ 0  0  1  0  0  0
-B         │ 0  0  1  0  0  0
-C         │ 1  1  0  1  0  0
-D         │ 0  0  1  0  1  1
-E         │ 0  0  0  1  0  1
-F         │ 0  0  0  1  1  0
-&quot;graph g {\nlayout=fdp;\nnode [shape=circle, style=filled, fillcolor=salmon];\nA [pos=\&quot;0,2!\&quot;];\n     \nB [pos=\&quot;0,-0!\&quot;];\n  \nC [pos=\&quot;1,1!\&quot;];\n  \nD [pos=\&quot;2.5,1!\&quot;];\n  \nE [pos=\&quot;3.5,2!\&quot;];\n  \nF [pos=\&quot;3.5,0!\&quot;];\nA -- C;\nB -- C;\nC -- D;\nD -- E;\nD -- F;\nE -- F;\n\n}\n&quot;
-/home/nono/workspace/UP/snha-project/snha4jl/src/MGraph.jl
-Downloading m_dot-for-docu.png...
-&quot;/home/nono/workspace/UP/snha-project/snha4jl/img/m_dot-for-docu.png&quot;
-6×6 Named Matrix{Int64}
-row ╲ col │ A  B  C  D  E  F
-──────────┼─────────────────
-A         │ 0  0  1  0  0  0
-B         │ 0  0  1  0  0  0
-C         │ 1  1  0  1  0  0
-D         │ 0  0  1  0  1  1
-E         │ 0  0  0  1  0  1
-F         │ 0  0  0  1  1  0
-&quot;graph g {\nlayout=fdp;\nnode [shape=circle, style=filled, fillcolor=salmon];\nA [pos=\&quot;0,2!\&quot;];\n     \nB [pos=\&quot;0,-0!\&quot;];\n  \nC [pos=\&quot;1,1!\&quot;];\n  \nD [pos=\&quot;2.5,1!\&quot;];\n  \nE [pos=\&quot;3.5,2!\&quot;];\n  \nF [pos=\&quot;3.5,0!\&quot;];\nA -- C;\nB -- C;\nC -- D;\nD -- E;\nD -- F;\nE -- F;\n\n}\n&quot;
-/home/nono/workspace/UP/snha-project/snha4jl/src/MGraph.jl
-Downloading w_dot-for-docu.png...
-&quot;/home/nono/workspace/UP/snha-project/snha4jl/img/w_dot-for-docu.png&quot;
-8×8 Named Matrix{Int64}
-row ╲ col │ A  B  C  D  E  F  G  H
-──────────┼───────────────────────
-A         │ 0  1  1  1  0  1  1  0
-B         │ 0  0  0  0  0  0  0  1
-C         │ 0  0  0  0  1  0  0  0
-D         │ 0  0  0  0  0  0  0  0
-E         │ 0  0  0  0  0  0  0  0
-F         │ 0  0  0  1  0  0  0  1
-G         │ 0  0  0  0  0  0  0  0
-H         │ 0  0  0  0  0  0  0  0
-&quot;digraph g {\nlayout=dot; rankdir=LR;\nnode [shape=circle, style=filled, fillcolor=salmon];\nA -&gt; B;\nA -&gt; C;\nA -&gt; D;\nA -&gt; F;\nA -&gt; G;\nB -&gt; H;\nC -&gt; E;\nF -&gt; D;\nF -&gt; H;\n\n}\n&quot;
-/home/nono/workspace/UP/snha-project/snha4jl/src/MGraph.jl
-Downloading a_dot-for-docu.png...
-&quot;/home/nono/workspace/UP/snha-project/snha4jl/img/a_dot-for-docu.png&quot;
-8×8 Named Matrix{Int64}
-row ╲ col │ A  B  C  D  E  F  G  H
-──────────┼───────────────────────
-A         │ 0  1  0  0  0  0  0  0
-B         │ 0  0  1  0  0  0  0  0
-C         │ 0  0  0  1  0  0  0  0
-D         │ 0  0  0  0  1  0  0  0
-E         │ 0  0  0  0  0  1  0  0
-F         │ 0  0  0  0  0  0  1  0
-G         │ 0  0  0  0  0  0  0  1
-H         │ 0  0  0  0  0  0  0  0
-&quot;digraph g {\nlayout=circo;\nnode [shape=circle, style=filled, fillcolor=salmon];\nultimo [fillcolor=transparent, color=transparent, fontcolor=transparent];\n\n        H -&gt; ultimo [color=transparent];\n\n        ultimo -&gt; A [color=transparent];\n\nA -&gt; B;\nB -&gt; C;\nC -&gt; D;\nD -&gt; E;\nE -&gt; F;\nF -&gt; G;\nG -&gt; H;\n\n}\n&quot;
-/home/nono/workspace/UP/snha-project/snha4jl/src/MGraph.jl
-Downloading b_dot-for-docu.png...
-&quot;/home/nono/workspace/UP/snha-project/snha4jl/img/b_dot-for-docu.png&quot;
-8×8 Named Matrix{Int64}
-row ╲ col │ A  B  C  D  E  F  G  H
-──────────┼───────────────────────
-A         │ 0  1  0  0  0  0  0  0
-B         │ 0  0  1  0  0  0  0  0
-C         │ 0  0  0  1  0  0  0  0
-D         │ 0  0  0  0  1  0  0  0
-E         │ 0  0  0  0  0  1  0  0
-F         │ 0  0  0  0  0  0  1  0
-G         │ 0  0  0  0  0  0  0  1
-H         │ 1  0  0  0  0  0  0  0
-&quot;digraph g {\nlayout=circo;\nnode [shape=circle, style=filled, fillcolor=salmon];\nA -&gt; B;\nH -&gt; A;\nB -&gt; C;\nC -&gt; D;\nD -&gt; E;\nE -&gt; F;\nF -&gt; G;\nG -&gt; H;\n\n}\n&quot;
-/home/nono/workspace/UP/snha-project/snha4jl/src/MGraph.jl
-Downloading c_dot-for-docu.png...
-&quot;/home/nono/workspace/UP/snha-project/snha4jl/img/c_dot-for-docu.png&quot;</code></pre>
 
 <table class="table">
 <thead>
@@ -272,29 +167,43 @@ Downloading c_dot-for-docu.png...
 <ul>
 <li><em>data</em>  - a dataframe where network nodes are the rownames and data variables are in the columns</li>
 <li><em>alpha</em> - confidence threshold for p-value edge cutting after all chains were generated, default: 0.01</li>
-<li><em>method</em> - method to calculate correlation/association values, can be pearson, spearman, kendall, cor.fk (requires pcaPP package), rpart or mi (mutual information) default: 'pearson'.</li>
+<li><em>method</em> - method to calculate correlation/association values, can be pearson, spearman, kendall; default: 'pearson'.</li>
 <li><em>threshold</em> - correlation coefficient threshold which r values should be used for chain generation, default: 0.1</li>
-<li><em>check.singles</em> - should isolated nodes connected with sufficent high R^2 and significance, default: false</li>
-<li><em>chains.clean</em> - should shorter chains be removed if they are in longer chains, and should reverse dubplicated chains be removed, default: true</li>
+<li><em>check</em>singles_ - should isolated nodes connected with sufficent high R^2 and significance, default: false</li>
+<li><em>chains</em>clean_ - should shorter chains be removed if they are in longer chains, and should reverse dubplicated chains be removed, default: true</li>
 <li><em>prob</em> - should probabilities be computed for each edge using bootstrapping. Only in this case the parameters starting with prob are used, default: false</li>
-<li><em>prob.threshold</em> - threshold to set an edge, a value of 0.5 means, that the edge must be found in 50% of all samplings, default: 0.2</li>
-<li><em>prob.n</em> - number of boostrap samples to be taken, default: 25
+<li><em>prob</em>threshold_ - threshold to set an edge, a value of 0.5 means, that the edge must be found in 50% of all samplings, default: 0.2</li>
+<li><em>prob</em>n_ - number of boostrap samples to be taken, default: 25
 </li></ul>
 
 <p>Returns:  An asg graph data object with the fields theta for the adjacency matrix, sigma for the correlation matrix, chains for the association chains and data representing the input data.</p>
 
 <p>Examples:</p>
-
-<pre class='code'><code class='jl'>data(swiss)
-swg=asg(swiss,method='spearman')
-names(swg)
-swg[&quot;theta&quot;]
-round(sigma,2)
-# resampling approach
-swg=asg(swiss,method='spearman',check.singles=true,prob=true)
-swg[&quot;theta&quot;]
-swg[&quot;probabilities&quot;]</code></pre>
 </blockquote>
+
+<pre class='code'><code class='julia'>using snha4jl
+println(&quot;hola&quot;)
+decathlon = load_decathlon()
+println(&quot;decathlon&quot;)
+dcg=asg(decathlon,method=&quot;spearman&quot;)
+names(swg)
+dcg[&quot;theta&quot;]
+show(stdout, &quot;text/plain&quot;, dcg[&quot;theta&quot;])
+println()
+d_dot = graph2dot(dcg[&quot;theta&quot;],mode=&quot;undirected&quot;,type=&quot;custom&quot;,custype=&quot;layout=dot; rankdir=LR;&quot;)
+kroki(d_dot,type=&quot;graphviz&quot;,name=&quot;decathlon_dot-for-docu&quot;)
+
+# resampling approach
+dcg=asg(decathlon,method=&quot;spearman&quot;,check_singles=true,prob=true)
+show(stdout, &quot;text/plain&quot;, dcg[&quot;theta&quot;])
+println()
+show(stdout, &quot;text/plain&quot;, dcg[&quot;probabilities&quot;])
+println()
+d_dot = graph2dot(dcg[&quot;theta&quot;],mode=&quot;undirected&quot;,type=&quot;custom&quot;,custype=&quot;layout=dot; rankdir=LR;&quot;)
+kroki(d_dot,type=&quot;graphviz&quot;,name=&quot;decathlon_dot-with-prob-for-docu&quot;)</code></pre>
+
+<pre class='code'><code class='julia'>hola
+decathlon</code></pre>
 
 <p><a name="autonames"> </a>
 <strong>autonames(n, prefix)</strong></p>
@@ -424,48 +333,32 @@ Examples:
 <p>Arguments:</p>
 
 <ul>
-<li><em>g</em> - graph or adjacency matrix</li>
-<li><em>mode</em>- directed or undirected
-  -</li>
-<li><em>type</em> - specific type of graph layout
-  -<em>shape</em> - graphviz node shape
-  -<em>style</em> - graphviz node style
-  -<em>fillcolor</em> - graphviz node color
-Examples:
+<li><em>x</em> - adjacency matrix</li>
+<li><em>mode</em>- directed or undirected</li>
+<li><em>type</em> - specific type of graph layout</li>
+<li><em>custype</em> - optional string to specify type=&quot;custom&quot;</li>
+<li><em>shape</em> - graphviz node shape</li>
+<li><em>style</em> - graphviz node style</li>
+<li><em>thecol</em> - specific node colors: String for all the same color, Vector{String} to pass a list of colors, or Dict{Any, String} to assign specific colors to each node.</li>
+<li><em>inout</em>color_ - 3-element Vector{String} or Tuple{Vararg{String}} for source, intermediate, and sink nodes in directed graphs
 </li></ul>
 
-<pre class='code'><code class='jl'>  using NamedArrays
+<p>Examples:</p>
+
+<pre class='code'><code class='jl'></code></pre>
+</blockquote>
+
+<p>using MGraph
   L=string.('A':'Z')[1:3]
   M=NamedArray(zeros(Int64,3,3),(L,L),(&quot;row&quot;, &quot;col&quot;))
   M[&quot;A&quot;,&quot;B&quot;]=1
   M[&quot;B&quot;,&quot;C&quot;]=1
   M
   g=graph2dot(M)
-  url=kroki(g,type=&quot;graphviz&quot;)
-  print(url)</code></pre>
+  kroki(g,type=&quot;graphviz&quot;, name=&quot;graph2dot-example&quot;)</p>
 
-<p>In one line directly within the Markdown text could write.</p>
-
-<pre class='code'><code>  ![ ](` jl kroki(graph2dot(M),type=&quot;graphviz&quot;)`)</code></pre>
-
-<p><img src="" alt=" "/></p>
-
-Error: Cannot open '/home/nono/workspace/UP/snha-project/snha4jl/docs/<p><img src="" alt=" "/></p>'!
-
-
-
-<p>Here an undirected graph example:</p>
-
-<pre class='code'><code> # next three lines should be on one line
- ![ ](` jl kroki(graph2dot(
-     gnew(type=&quot;angie&quot;,mode=&quot;undirected&quot;),type=&quot;graph&quot;,fillcolor=&quot;skyblue&quot;),
-     type=&quot;graphviz&quot;)`)</code></pre>
-
-<p>![ ](<code>jl kroki(
-          graph2dot(
-          new(type=&quot;angie&quot;,mode=&quot;undirected&quot;),
-          type=&quot;graph&quot;,fillcolor=&quot;skyblue&quot;),
-          type=&quot;graphviz&quot;)</code>)</p>
+<blockquote>
+<pre class='code'><code></code></pre>
 </blockquote>
 
 <p><a name="kroki"> </a>

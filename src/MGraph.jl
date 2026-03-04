@@ -89,7 +89,7 @@ export asg, centrality, shortest_paths, simple_paths, components, closeness, u2d
 
 ```{jl label=gnew, results="hide"}
 
-using MGraph
+using snha4jl
 # Build using adjacency matrix
 println(joinpath(abspath(joinpath(pathof(@__MODULE__), "..")), "img"))
 M = zeros(Int64,6,6)
@@ -304,29 +304,42 @@ end
 
 > - _data_  - a dataframe where network nodes are the rownames and data variables are in the columns
   - _alpha_ - confidence threshold for p-value edge cutting after all chains were generated, default: 0.01
-  - _method_ - method to calculate correlation/association values, can be pearson, spearman, kendall, cor.fk (requires pcaPP package), rpart or mi (mutual information) default: 'pearson'.
+  - _method_ - method to calculate correlation/association values, can be pearson, spearman, kendall; default: 'pearson'.
   - _threshold_ - correlation coefficient threshold which r values should be used for chain generation, default: 0.1
-  - _check.singles_ - should isolated nodes connected with sufficent high R^2 and significance, default: false
-  - _chains.clean_ - should shorter chains be removed if they are in longer chains, and should reverse dubplicated chains be removed, default: true
+  - _check_singles_ - should isolated nodes connected with sufficent high R^2 and significance, default: false
+  - _chains_clean_ - should shorter chains be removed if they are in longer chains, and should reverse dubplicated chains be removed, default: true
   - _prob_ - should probabilities be computed for each edge using bootstrapping. Only in this case the parameters starting with prob are used, default: false
-  - _prob.threshold_ - threshold to set an edge, a value of 0.5 means, that the edge must be found in 50% of all samplings, default: 0.2
-  - _prob.n_ - number of boostrap samples to be taken, default: 25
+  - _prob_threshold_ - threshold to set an edge, a value of 0.5 means, that the edge must be found in 50% of all samplings, default: 0.2
+  - _prob_n_ - number of boostrap samples to be taken, default: 25
 
 > Returns:  An asg graph data object with the fields theta for the adjacency matrix, sigma for the correlation matrix, chains for the association chains and data representing the input data.
 
 > Examples:
 
-> ```{jl label=asg}
-data(swiss)
-swg=asg(swiss,method='spearman')
+```{jl label=asg}
+
+using snha4jl
+println("hola")
+decathlon = load_decathlon()
+println("decathlon")
+dcg=asg(decathlon,method="spearman")
 names(swg)
-swg["theta"]
-round(sigma,2)
+dcg["theta"]
+show(stdout, "text/plain", dcg["theta"])
+println()
+d_dot = graph2dot(dcg["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;")
+kroki(d_dot,type="graphviz",name="decathlon_dot-for-docu")
+
 # resampling approach
-swg=asg(swiss,method='spearman',check.singles=true,prob=true)
-swg["theta"]
-swg["probabilities"]
-> ```
+dcg=asg(decathlon,method="spearman",check_singles=true,prob=true)
+show(stdout, "text/plain", dcg["theta"])
+println()
+show(stdout, "text/plain", dcg["probabilities"])
+println()
+d_dot = graph2dot(dcg["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;")
+kroki(d_dot,type="graphviz",name="decathlon_dot-with-prob-for-docu")
+
+```
 
 """
 
@@ -2204,3 +2217,4 @@ if abspath(PROGRAM_FILE) == @__FILE__
     main(ARGS)
 end
 end
+    
