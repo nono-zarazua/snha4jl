@@ -7,7 +7,6 @@ date: 2025-10-28
 ---
 """
 
-module MGraph
 # ════════════════════════════════════════════════════════════════════════════
 
 using NamedArrays, Statistics, StatsBase, Distributions, DataFrames
@@ -51,14 +50,6 @@ using .MGraph
 ```
 """
 # ════════════════════════════════════════════════════════════════════════════
-
-# Bring in deps (avoid global using in packages unless needed)
-# using SparseArrays
-# using LinearAlgebra
-
-# What you want users to see by default:
-export gnew, d2u, autonames, deg, graph2dot, kroki, graph2data, nodeColors
-export asg, centrality, shortest_paths, simple_paths, components, closeness, u2d
 
 """#'
 
@@ -319,9 +310,7 @@ end
 ```{jl label=asg}
 
 using snha4jl
-println("hola")
 decathlon = load_decathlon()
-println("decathlon")
 dcg=asg(decathlon,method="spearman")
 names(swg)
 dcg["theta"]
@@ -2216,5 +2205,5 @@ end
 if abspath(PROGRAM_FILE) == @__FILE__
     main(ARGS)
 end
-end
+
     
