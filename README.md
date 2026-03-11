@@ -37,7 +37,7 @@ julia> Pkg.add(url="https://github.com/nono-zarazua/snha4jl")
 After the installation you should be able to run:
 
 ```
-julia> Pkg.status("MGraph")
+julia> Pkg.status("snha4jl")
 ```
 
 # Create your 1<sup>st</sup> "St. Nicolas House"
