@@ -56,17 +56,17 @@ In the first place we create test data in two steps:
 
 1. We create a directed graph.
 ```
-julia -e 'using MGraph; MGraph.main(ARGS)' -- --gnew werner -o -v
+./bin/snha.jl --gnew werner -o -v
 ```
 
 2. We create correlated data along the edges of the graph.
 ```
-julia -e 'using MGraph; MGraph.main(ARGS)' -- --create-data --graph gnew-output.csv -o
+./bin/snha.jl --create-data --graph gnew-output.csv -o
 ```
 
 3. Now, we can run the algortihm to predict the graph based on the correlation of the data.
 ```
-julia -e 'using MGraph; MGraph.main(ARGS)' -- --snha --method pearson --data create-data-output.csv -v 
+./bin/snha.jl --snha --method pearson --data create-data-output.csv -v 
 ```
 
 **Note**: The result might differ from the picture below.
@@ -78,7 +78,7 @@ julia
 
 ```
 
-julia> using MGraph
+julia> using snha4jl
 
 # Create graph
 julia> g = gnew(type="werner", mode="undirected")
