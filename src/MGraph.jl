@@ -312,11 +312,21 @@ using snha4jl
 
 # Decathlon Data
 decathlon = load_decathlon(); nothing
+cols = Dict("disc" => "skyblue",
+        "high" => "salmon",
+        "jave" => "skyblue",
+        "long" => "salmon",
+        "pole" => "skyblue",
+        "shot" => "skyblue",
+        "X100" => "salmon",
+        "X110" => "salmon",
+        "X1500" => "salmon",
+        "X400" => "salmon")
 dcg=asg(decathlon,method="spearman"); nothing
 println("Adjacency Matrix:")
 show(stdout, "text/plain", dcg["theta"])
 println("\n" * "-"^50)
-deca_dot = graph2dot(dcg["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;"); nothing
+deca_dot = graph2dot(dcg["theta"],mode="undirected",type="random",thecol=cols); nothing
 kroki(deca_dot,type="graphviz",name="decathlon_dot-for-docu"); nothing
 println("\n" * "-"^50)
 
@@ -325,26 +335,28 @@ dcg_prob=asg(decathlon,method="spearman",check_singles=true,prob=true); nothing
 println("Adjacency Matrix for Resampling:")
 show(stdout, "text/plain", dcg_prob["theta"])
 println("\n" * "-"^50)
-deca_prob_dot = graph2dot(dcg_prob["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;"); nothing
+deca_prob_dot = graph2dot(dcg_prob["theta"],mode="undirected",type="random",thecol=cols); nothing
 kroki(deca_prob_dot,type="graphviz",name="decathlon_dot-with-prob-for-docu"); nothing
 
 # Birth Weight Data
 birthwt = load_birthwt(); nothing
-bwg=asg(birthwt,method="spearman"); nothing
+cols_to_keep = ["age", "lwt", "smoke", "ptl", "ht", "ui", "bwt"]
+birthwt_subset = birthwt[!, cols_to_keep]
+bwg=asg(birthwt_subset,method="spearman"); nothing
 println("Adjacency Matrix:")
 show(stdout, "text/plain", bwg["theta"])
 println("\n" * "-"^50)
-bwt_dot = graph2dot(bwg["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;"); nothing
+bwt_dot = graph2dot(bwg["theta"],mode="undirected",type="random"); nothing
 println("\n" * "-"^50)
 kroki(bwt_dot,type="graphviz",name="birthwt_dot-for-docu"); nothing
 println("\n" * "-"^50)
 
 # resampling approach
-bwg_prob=asg(birthwt,method="spearman",check_singles=true,prob=true); nothing
+bwg_prob=asg(birthwt_subset,method="spearman",check_singles=true,prob=true); nothing
 println("Adjacency Matrix for Resampling:")
 show(stdout, "text/plain", bwg_prob["theta"])
 println("\n" * "-"^50)
-bwt_prob_dot = graph2dot(bwg_prob["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;"); nothing
+bwt_prob_dot = graph2dot(bwg_prob["theta"],mode="undirected",type="random"); nothing
 println("\n" * "-"^50)
 kroki(bwt_prob_dot,type="graphviz",name="birthwt_dot-with-prob-for-docu"); nothing
 println("\n" * "-"^50)
@@ -355,7 +367,7 @@ swg=asg(swiss,method="spearman"); nothing
 println("Adjacency Matrix:")
 show(stdout, "text/plain", swg["theta"])
 println("\n" * "-"^50)
-swiss_dot = graph2dot(swg["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;"); nothing
+swiss_dot = graph2dot(swg["theta"],mode="undirected",type="random"); nothing
 println("\n" * "-"^50)
 kroki(swiss_dot,type="graphviz",name="swiss_dot-for-docu"); nothing
 println("\n" * "-"^50)
@@ -365,7 +377,7 @@ swg_prob=asg(swiss,method="spearman",check_singles=true,prob=true); nothing
 println("Adjacency Matrix for Resampling:")
 show(stdout, "text/plain", swg_prob["theta"])
 println("\n" * "-"^50)
-swiss_prob_dot = graph2dot(swg_prob["theta"],mode="undirected",type="custom",custype="layout=dot; rankdir=LR;"); nothing
+swiss_prob_dot = graph2dot(swg_prob["theta"],mode="undirected",type="random"); nothing
 println("\n" * "-"^50)
 kroki(swiss_prob_dot,type="graphviz",name="swiss_dot-with-prob-for-docu"); nothing
 println("\n" * "-"^50)
