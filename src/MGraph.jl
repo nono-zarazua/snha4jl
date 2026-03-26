@@ -326,7 +326,7 @@ dcg=asg(decathlon,method="spearman"); nothing
 println("Adjacency Matrix:")
 show(stdout, "text/plain", dcg["theta"])
 println("\n" * "-"^50)
-deca_dot = graph2dot(dcg["theta"],mode="undirected",type="random",thecol=cols); nothing
+deca_dot = graph2dot(dcg["theta"],mode="undirected",type="random",max_label_len=5,thecol=cols); nothing
 kroki(deca_dot,type="graphviz",name="decathlon_dot-for-docu"); nothing
 println("\n" * "-"^50)
 
@@ -335,7 +335,7 @@ dcg_prob=asg(decathlon,method="spearman",check_singles=true,prob=true); nothing
 println("Adjacency Matrix for Resampling:")
 show(stdout, "text/plain", dcg_prob["theta"])
 println("\n" * "-"^50)
-deca_prob_dot = graph2dot(dcg_prob["theta"],mode="undirected",type="random",thecol=cols); nothing
+deca_prob_dot = graph2dot(dcg_prob["theta"],mode="undirected",type="random",max_label_len=5,thecol=cols); nothing
 kroki(deca_prob_dot,type="graphviz",name="decathlon_dot-with-prob-for-docu"); nothing
 
 # Birth Weight Data
@@ -346,7 +346,7 @@ bwg=asg(birthwt_subset,method="spearman"); nothing
 println("Adjacency Matrix:")
 show(stdout, "text/plain", bwg["theta"])
 println("\n" * "-"^50)
-bwt_dot = graph2dot(bwg["theta"],mode="undirected",type="random"); nothing
+bwt_dot = graph2dot(bwg["theta"],mode="undirected",type="random",max_label_len=5); nothing
 println("\n" * "-"^50)
 kroki(bwt_dot,type="graphviz",name="birthwt_dot-for-docu"); nothing
 println("\n" * "-"^50)
@@ -356,7 +356,7 @@ bwg_prob=asg(birthwt_subset,method="spearman",check_singles=true,prob=true); not
 println("Adjacency Matrix for Resampling:")
 show(stdout, "text/plain", bwg_prob["theta"])
 println("\n" * "-"^50)
-bwt_prob_dot = graph2dot(bwg_prob["theta"],mode="undirected",type="random"); nothing
+bwt_prob_dot = graph2dot(bwg_prob["theta"],mode="undirected",type="random",max_label_len=5); nothing
 println("\n" * "-"^50)
 kroki(bwt_prob_dot,type="graphviz",name="birthwt_dot-with-prob-for-docu"); nothing
 println("\n" * "-"^50)
@@ -367,7 +367,7 @@ swg=asg(swiss,method="spearman"); nothing
 println("Adjacency Matrix:")
 show(stdout, "text/plain", swg["theta"])
 println("\n" * "-"^50)
-swiss_dot = graph2dot(swg["theta"],mode="undirected",type="random"); nothing
+swiss_dot = graph2dot(swg["theta"],mode="undirected",type="random",max_label_len=5); nothing
 println("\n" * "-"^50)
 kroki(swiss_dot,type="graphviz",name="swiss_dot-for-docu"); nothing
 println("\n" * "-"^50)
@@ -377,7 +377,7 @@ swg_prob=asg(swiss,method="spearman",check_singles=true,prob=true); nothing
 println("Adjacency Matrix for Resampling:")
 show(stdout, "text/plain", swg_prob["theta"])
 println("\n" * "-"^50)
-swiss_prob_dot = graph2dot(swg_prob["theta"],mode="undirected",type="random"); nothing
+swiss_prob_dot = graph2dot(swg_prob["theta"],mode="undirected",type="random",max_label_len=5); nothing
 println("\n" * "-"^50)
 kroki(swiss_prob_dot,type="graphviz",name="swiss_dot-with-prob-for-docu"); nothing
 println("\n" * "-"^50)
@@ -887,7 +887,9 @@ end
   - _type_ - specific type of graph layout
   - _custype_ - optional string to specify type="custom"
   - _shape_ - graphviz node shape
+  - _width_ - graphviz node with
   - _style_ - graphviz node style
+  - _max_label_len_ - max number of characters allowed for node labels
   - _thecol_ - specific node colors: String for all the same color, Vector{String} to pass a list of colors, or Dict{Any, String} to assign specific colors to each node.
   - _inout_color_ - 3-element Vector{String} or Tuple{Vararg{String}} for source, intermediate, and sink nodes in directed graphs
 
@@ -914,7 +916,9 @@ function graph2dot(x;
     type="custom",
     custype::Union{String, Nothing}=nothing,
     shape="circle",
+    width=1.0,
     style="filled",
+    max_label_len=10,
     thecol::Union{String, Vector{String}, Dict{<:Any, String}, Nothing}=nothing,
     inout_color::Union{String, AbstractVector{String}, Tuple{Vararg{String}}, Nothing} = nothing
 )
@@ -1013,20 +1017,24 @@ function graph2dot(x;
         colors = Dict(zip(all_keys, precol))
     end 
 
-    node_style = "    node [shape=$shape, style=$style];\n"
+    width = string(width)
+    node_style = "    node [shape=$shape, width=$width, fixedsize=true, style=$style];\n"
+    lbls = [length(k) > max_label_len ? k[1:max_label_len] * "..." : k for k in all_keys]
     str = ""
     if type == "werner"
+        # 2. Inject the label attribute into the hardcoded werner block
         str *= """
-            \"$(all_keys[1])\" [pos="0,2!", fillcolor=\"$(colors[all_keys[1]])\"];
-            \"$(all_keys[2])\" [pos="0,-0!", fillcolor=\"$(colors[all_keys[2]])\"];
-            \"$(all_keys[3])\" [pos="1,1!", fillcolor=\"$(colors[all_keys[3]])\"];
-            \"$(all_keys[4])\" [pos="2.5,1!", fillcolor=\"$(colors[all_keys[4]])\"];
-            \"$(all_keys[5])\" [pos="3.5,2!", fillcolor=\"$(colors[all_keys[5]])\"];
-            \"$(all_keys[6])\" [pos="3.5,0!", fillcolor=\"$(colors[all_keys[6]])\"];
+            \"$(all_keys[1])\" [label=\"$(lbls[1])\", pos="0,2!", fillcolor=\"$(colors[all_keys[1]])\"];
+            \"$(all_keys[2])\" [label=\"$(lbls[2])\", pos="0,-0!", fillcolor=\"$(colors[all_keys[2]])\"];
+            \"$(all_keys[3])\" [label=\"$(lbls[3])\", pos="1,1!", fillcolor=\"$(colors[all_keys[3]])\"];
+            \"$(all_keys[4])\" [label=\"$(lbls[4])\", pos="2.5,1!", fillcolor=\"$(colors[all_keys[4]])\"];
+            \"$(all_keys[5])\" [label=\"$(lbls[5])\", pos="3.5,2!", fillcolor=\"$(colors[all_keys[5]])\"];
+            \"$(all_keys[6])\" [label=\"$(lbls[6])\", pos="3.5,0!", fillcolor=\"$(colors[all_keys[6]])\"];
         """
     else
-        for name in all_keys
-            str *= "    \"$name\" [fillcolor=\"$(colors[name])\"];\n"
+        # 3. Use the pre-calculated labels in the standard loop
+        for (i, name) in enumerate(all_keys)
+            str *= "    \"$name\" [label=\"$(lbls[i])\", fillcolor=\"$(colors[name])\"];\n"
         end
     end
 
